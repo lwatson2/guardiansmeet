@@ -16,7 +16,7 @@ const ProfileContainer = styled.section`
 `;
 const ProfileFormContainer = styled.div`
   display: grid;
-  grid-template-rows: repeat(3, auto);
+  grid-template-rows: repeat(5, auto);
   grid-gap: 30px;
   background: hsl(211, 10%, 53%);
   justify-items: center;
@@ -85,7 +85,7 @@ const ProfileLabel = styled.label`
 const ProfileFormInput = styled.input`
   border-radius: 10px;
   outline: none;
-  border: none;
+  border: ${props => props.borderColor};
   height: 34px;
   padding-left: 10px;
   background: hsl(211, 16%, 82%);
@@ -102,8 +102,8 @@ const PreferenceContainer = styled.div`
   flex-direction: row;
   width: 100%;
   @media screen and (min-width: 767px) {
-    grid-column: span 2;
     width: 220px;
+    align-self: end;
   }
 `;
 const PreferenceSelect = styled.select`
@@ -120,6 +120,7 @@ const PreferenceSelect = styled.select`
   background-position: calc(100% - 10px) center;
   background-repeat: no-repeat;
   font-size: 16px;
+  border: ${props => props.borderColor};
   border-radius: 10px;
   cursor: pointer;
   :focus {
@@ -145,6 +146,7 @@ const ProfileBio = styled.textarea`
   padding: 6px;
   background: hsl(211, 16%, 82%);
   color: hsl(209, 20%, 25%);
+  border: ${props => props.borderColor};
   :focus {
     box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.3);
   }
@@ -154,12 +156,8 @@ const ProfileBio = styled.textarea`
 `;
 const ProfileBtnContainer = styled.div`
   display: flex;
-  justify-content: end;
-  align-items: end;
-  width: 100%;
-
   @media screen and (min-width: 767px) {
-    grid-column: span 2;
+    grid-column: 2;
   }
 `;
 const ProfileSubmitBtn = styled.button`
@@ -176,13 +174,28 @@ const ProfileSubmitBtn = styled.button`
     box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.3);
   }
 `;
+const ErrorMessageContainer = styled.div`
+  background: hsla(0, 100%, 80%, 1);
+  margin-top: 5px;
+  font-size: 13px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  border-radius: 10px;
+`;
+const ErrorMessage = styled.span`
+  color: hsl(0, 85%, 27%);
+  padding: 0 5px;
+`;
 const CreateProfile = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const handleProfilePicture = event => {
     setProfilePicture(URL.createObjectURL(event.target.files[0]));
   };
 
-  const handleLogin = () => {};
+  const handleLogin = () => {
+    console.log(errors);
+  };
   const { values, handleChange, handleSubmit, errors } = useForm(
     handleLogin,
     validate
@@ -226,25 +239,50 @@ const CreateProfile = () => {
           <FormSectionContainer>
             <ProfileLabel htmlFor="name">Name</ProfileLabel>
             <ProfileFormInput
+              borderColor={errors.name ? "1px solid hsl(0, 75%, 45%)" : "none"}
               type="text"
               value={values.name || ""}
               onChange={handleChange}
               id="name"
               name="name"
+              required
             />
+            {errors.name && (
+              <ErrorMessageContainer>
+                <ErrorMessage>{errors.name}</ErrorMessage>
+              </ErrorMessageContainer>
+            )}
           </FormSectionContainer>
           <FormSectionContainer>
             <ProfileLabel htmlFor="password">Password</ProfileLabel>
             <ProfileFormInput
+              borderColor={
+                errors.password ? "1px solid hsl(0, 75%, 45%)" : "none"
+              }
               type="password"
               value={values.password || ""}
               onChange={handleChange}
               id="password"
               name="password"
+              required
             />
+            {errors.password && (
+              <ErrorMessageContainer>
+                <ErrorMessage>{errors.password}</ErrorMessage>
+              </ErrorMessageContainer>
+            )}
           </FormSectionContainer>
           <PreferenceContainer>
-            <PreferenceSelect name="preference" id="preference">
+            <PreferenceSelect
+              borderColor={
+                errors.preference ? "1px solid hsl(0, 75%, 45%)" : "none"
+              }
+              name="preference"
+              id="preference"
+              value={values.preference || ""}
+              onChange={handleChange}
+              required
+            >
               <option value="" hidden>
                 Choose your preference
               </option>
@@ -253,10 +291,43 @@ const CreateProfile = () => {
               <option value="Both">Both</option>
               <option value="Other">Other</option>
             </PreferenceSelect>
+            {errors.preference && (
+              <ErrorMessageContainer>
+                <ErrorMessage>{errors.preference}</ErrorMessage>
+              </ErrorMessageContainer>
+            )}
           </PreferenceContainer>
+          <FormSectionContainer>
+            <ProfileLabel htmlFor="age">Age</ProfileLabel>
+            <ProfileFormInput
+              borderColor={errors.age ? "1px solid hsl(0, 75%, 45%)" : "none"}
+              type="number"
+              value={values.age || ""}
+              onChange={handleChange}
+              id="age"
+              name="age"
+              min="18"
+              max="80"
+              required
+            />
+            {errors.age && (
+              <ErrorMessageContainer>
+                <ErrorMessage>{errors.age}</ErrorMessage>
+              </ErrorMessageContainer>
+            )}
+          </FormSectionContainer>
           <BioSectionContainer>
             <ProfileLabel htmlfor="bio">Enter a bio</ProfileLabel>
-            <ProfileBio rows="5" cols="40"></ProfileBio>
+            <ProfileBio
+              borderColor={errors.bio ? "1px solid hsl(0, 75%, 45%)" : "none"}
+              rows="5"
+              cols="40"
+            ></ProfileBio>
+            {errors.bio && (
+              <ErrorMessageContainer>
+                <ErrorMessage>{errors.bio}</ErrorMessage>
+              </ErrorMessageContainer>
+            )}
           </BioSectionContainer>
           <ProfileBtnContainer>
             <ProfileSubmitBtn>Submit</ProfileSubmitBtn>
