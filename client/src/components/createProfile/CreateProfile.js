@@ -190,11 +190,15 @@ const ErrorMessage = styled.span`
 const CreateProfile = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const handleProfilePicture = event => {
+    handleChange(event);
     setProfilePicture(URL.createObjectURL(event.target.files[0]));
   };
 
   const handleLogin = () => {
-    console.log(errors);
+    values.name = values.name.trim();
+    if (values.bio) {
+      values.bio = values.bio.replace(/[\r\n]+/g, " ");
+    }
   };
   const { values, handleChange, handleSubmit, errors } = useForm(
     handleLogin,
@@ -321,7 +325,11 @@ const CreateProfile = () => {
             <ProfileBio
               borderColor={errors.bio ? "1px solid hsl(0, 75%, 45%)" : "none"}
               rows="5"
+              onChange={handleChange}
               cols="40"
+              name="bio"
+              value={values.bio}
+              id="bio"
             ></ProfileBio>
             {errors.bio && (
               <ErrorMessageContainer>

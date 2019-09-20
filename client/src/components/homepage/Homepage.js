@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const HomePage = styled.div`
   height: 100%;
@@ -43,7 +44,9 @@ const Homepage = () => {
         <h2>Eyes up Guardian</h2>
         <p>Your true love is waiting</p>
         <ButtonContainer>
-          <Button>Create Profile</Button>
+          <Link to="new-profile">
+            <Button>Create Profile</Button>
+          </Link>
           <Button>Browse Guardians</Button>
         </ButtonContainer>
       </HomePageContainer>

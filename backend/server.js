@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const webpush = require("web-push");
 require("dotenv").config();
+const user = require("./routes/users");
 
 //Server Config
 const PORT = process.env.PORT || 5000;
@@ -18,3 +19,5 @@ mongoose
 const server = app.listen(PORT, () =>
   console.log(`server started on port ${PORT}`)
 );
+//Routing Config
+app.use("/users", user);
