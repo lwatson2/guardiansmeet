@@ -191,6 +191,8 @@ const ErrorMessage = styled.span`
 const CreateProfile = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const handleProfilePicture = event => {
+    // let formData = new FormData();
+    // formData.append("file", event.target.files[0]);
     handleChange(event);
     setProfilePicture(URL.createObjectURL(event.target.files[0]));
   };
@@ -200,18 +202,24 @@ const CreateProfile = () => {
     if (values.bio) {
       values.bio = values.bio.replace(/[\r\n]+/g, " ");
     }
+    const config = {
+      headers: {
+        "content-type": "multipart/form-data"
+      }
+    };
+    let formData = new FormData();
+    formData.append("files", values.profilePic);
+    console.log(formData.get("files"));
+    const data = { formData, values };
+    axios.post("/users/register", data);
   };
-  const test = () => {
-    const res = axios.get("/test");
-    console.log(res);
-  };
+
   const { values, handleChange, handleSubmit, errors } = useForm(
     handleLogin,
     validate
   );
   return (
     <ProfileContainer>
-      <button onClick={test}></button>
       <form onSubmit={handleSubmit}>
         <ProfileFormContainer>
           {profilePicture ? (

@@ -18,10 +18,17 @@ const useForm = (callback, validate) => {
 
   const handleChange = event => {
     event.persist();
-    setValues(values => ({
-      ...values,
-      [event.target.name]: event.target.value
-    }));
+    if (event.target.name === "profilePicture") {
+      setValues(values => ({
+        ...values,
+        profilePic: event.target.files[0]
+      }));
+    } else {
+      setValues(values => ({
+        ...values,
+        [event.target.name]: event.target.value
+      }));
+    }
   };
 
   return {
