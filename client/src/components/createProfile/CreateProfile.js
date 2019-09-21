@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import useForm from "../helpers/FormHelper";
 import validate from "../helpers/CreateProfileRules";
+import axios from "axios";
 
 const ProfileContainer = styled.section`
   height: 100%;
@@ -194,11 +195,15 @@ const CreateProfile = () => {
     setProfilePicture(URL.createObjectURL(event.target.files[0]));
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     values.name = values.name.trim();
     if (values.bio) {
       values.bio = values.bio.replace(/[\r\n]+/g, " ");
     }
+  };
+  const test = () => {
+    const res = axios.get("/test");
+    console.log(res);
   };
   const { values, handleChange, handleSubmit, errors } = useForm(
     handleLogin,
@@ -206,6 +211,7 @@ const CreateProfile = () => {
   );
   return (
     <ProfileContainer>
+      <button onClick={test}></button>
       <form onSubmit={handleSubmit}>
         <ProfileFormContainer>
           {profilePicture ? (
