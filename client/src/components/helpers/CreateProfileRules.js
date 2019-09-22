@@ -1,11 +1,14 @@
 const validate = values => {
   const choices = ["Male", "Female", "Both", "Other"];
   const errors = {};
+  if (values.profilePic && values.profilePic.size > 200000) {
+    errors.profilePicture = "Please limit profile pictures to 200kb";
+  }
   if (!values.name) {
     errors.name = "Please enter your name";
   }
   if (values.name && values.name.length > 150) {
-    errors.name = "name cannot be greater than 50 characters.";
+    errors.name = "Name cannot be greater than 150 characters.";
   }
   if (!values.password) {
     errors.password = "Please enter your password";

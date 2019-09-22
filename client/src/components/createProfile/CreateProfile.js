@@ -188,7 +188,7 @@ const ErrorMessage = styled.span`
   color: hsl(0, 85%, 27%);
   padding: 0 5px;
 `;
-const CreateProfile = () => {
+const CreateProfile = props => {
   const [profilePicture, setProfilePicture] = useState(null);
   const handleProfilePicture = event => {
     // let formData = new FormData();
@@ -197,21 +197,23 @@ const CreateProfile = () => {
     setProfilePicture(URL.createObjectURL(event.target.files[0]));
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async setValues => {
     values.name = values.name.trim();
     if (values.bio) {
       values.bio = values.bio.replace(/[\r\n]+/g, " ");
     }
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data"
-      }
-    };
     let formData = new FormData();
-    formData.append("files", values.profilePic);
-    console.log(formData.get("files"));
-    const data = { formData, values };
-    axios.post("/users/register", data);
+    formData.append("file", values.profilePic);
+    formData.append("name", values.name);
+    formData.append("password", values.password);
+    formData.append("preference", values.preference);
+    formData.append("age", values.age);
+    formData.append("bio", values.bio);
+    const res = await axios.post("/users/register", formData);
+
+    sessionStorage.setItem("isAuth", true);
+    setValues({});
+    props.history.push("/login");
   };
 
   const { values, handleChange, handleSubmit, errors } = useForm(
@@ -220,7 +222,7 @@ const CreateProfile = () => {
   );
   return (
     <ProfileContainer>
-      <form onSubmit={handleSubmit}>
+      <form encType="multipart/form-data" onSubmit={handleSubmit}>
         <ProfileFormContainer>
           {profilePicture ? (
             <ProfilePictureContainer>
@@ -237,6 +239,11 @@ const CreateProfile = () => {
                 name="profilePicture"
                 accept=".jpg, .png, .jpeg,"
               ></ProfilePictureInput>
+              {errors.profilePicture && (
+                <ErrorMessageContainer>
+                  <ErrorMessage>{errors.profilePicture}</ErrorMessage>
+                </ErrorMessageContainer>
+              )}
             </ProfilePictureContainer>
           ) : (
             <ProfilePictureContainer>
@@ -252,6 +259,11 @@ const CreateProfile = () => {
                   accept=".jpg, .png, .jpeg,"
                 ></ProfilePictureInput>
               </ProfilePictureCirlceContainer>
+              {errors.profilePicture && (
+                <ErrorMessageContainer>
+                  <ErrorMessage>{errors.profilePicture}</ErrorMessage>
+                </ErrorMessageContainer>
+              )}
             </ProfilePictureContainer>
           )}
           <FormSectionContainer>
