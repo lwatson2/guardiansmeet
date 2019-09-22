@@ -8,12 +8,53 @@ const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
 const saltRounds = 10;
-//Create route to upload image first then send the url back to server
+
+// Local Strategy for passport
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "name"
+    },
+    (name, password, done) => {
+      //Match user
+      User.findOne({ name: name })
+        .then(user => {
+          if (!user) {
+            return done(null, false, {
+              message: "That name is not registered."
+            });
+          }
+
+          //Match password
+          bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err) {
+              err;
+            }
+            if (isMatch) {
+              return done(null, user);
+            } else {
+              return done(null, false, { message: "Password is incorrect." });
+            }
+          });
+        })
+        .catch(err => err);
+    }
+  )
+);
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    done(err, user);
+  });
+});
+
 router.post("/register", async (req, res) => {
   let profilePicture;
   const { name, password, age, preference, bio } = req.body;
   const { file } = req.files;
-  // Checks if Username already exists
+  // Checks if name already exists
   const user = await User.findOne({ name });
   if (user) {
     res.json({
@@ -51,6 +92,38 @@ router.post("/register", async (req, res) => {
       });
     });
   }
+});
+router.post("/login", (req, res, next) => {
+  console.log(req.body);
+  passport.authenticate("local", (err, user, info) => {
+    // passport uses the local strategy in the /config/passport file
+    console.log(user);
+    if (user) {
+      // If there's a user sign a jsonwebtoken with their creds and send that back to the client
+      jwt.sign(
+        { user },
+        process.env.SECRET || "mysecretkey",
+        { expiresIn: "1d" },
+        (err, token) => {
+          res.json({
+            token,
+            user: {
+              name: user.name,
+              profilePicture: user.profilePicture,
+              preference: user.preference,
+              age: user.age,
+              bio: user.bio,
+              id: user._id
+            }
+          });
+        }
+      );
+    } else {
+      res.json({
+        err: info
+      });
+    }
+  })(req, res, next);
 });
 
 module.exports = router;

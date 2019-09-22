@@ -3,6 +3,7 @@ import styled from "styled-components";
 import useForm from "../helpers/FormHelper";
 import validate from "../helpers/CreateProfileRules";
 import axios from "axios";
+import { device } from "../helpers/mediaQueries";
 
 const ProfileContainer = styled.section`
   height: 100%;
@@ -11,7 +12,7 @@ const ProfileContainer = styled.section`
   justify-content: center;
   align-items: center;
   margin: 50px 0;
-  @media screen and (min-width: 767px) {
+  @media ${device.tablet} {
     margin: 0;
   }
 `;
@@ -27,7 +28,7 @@ const ProfileFormContainer = styled.div`
   border-radius: 20px;
   width: 300px;
   grid-template-columns: 1fr;
-  @media screen and (min-width: 767px) {
+  @media ${device.tablet} {
     padding: 10px;
     width: 600px;
     grid-template-columns: repeat(2, 1fr);
@@ -76,7 +77,7 @@ const FormSectionContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  @media screen and (min-width: 767px) {
+  @media ${device.tablet} {
     width: auto;
   }
 `;
@@ -94,7 +95,7 @@ const ProfileFormInput = styled.input`
   :focus {
     box-shadow: 0 5px 10px hsla(0, 0%, 0%, 0.3);
   }
-  @media screen and (min-width: 767px) {
+  @media ${device.tablet} {
     font-size: 16px;
   }
 `;
@@ -102,7 +103,7 @@ const PreferenceContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  @media screen and (min-width: 767px) {
+  @media ${device.tablet} {
     width: 220px;
     align-self: end;
   }
@@ -127,7 +128,7 @@ const PreferenceSelect = styled.select`
   :focus {
     box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.3);
   }
-  @media screen and (min-width: 767px) {
+  @media ${device.tablet} {
     font-size: 16px;
   }
 `;
@@ -135,7 +136,7 @@ const BioSectionContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  @media screen and (min-width: 767px) {
+  @media ${device.tablet} {
     width: auto;
     grid-column: span 2;
   }
@@ -151,13 +152,13 @@ const ProfileBio = styled.textarea`
   :focus {
     box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.3);
   }
-  @media screen and (min-width: 767px) {
+  @media ${device.tablet} {
     font-size: 16px;
   }
 `;
 const ProfileBtnContainer = styled.div`
   display: flex;
-  @media screen and (min-width: 767px) {
+  @media ${device.tablet} {
     grid-column: 2;
   }
 `;

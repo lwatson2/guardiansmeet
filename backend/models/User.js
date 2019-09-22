@@ -5,6 +5,12 @@ const notificationSchema = new mongoose.Schema({
   name: { type: String }
 });
 
+const messageSchema = new mongoose.Schema({
+  message: { type: String },
+  sender: { type: String },
+  timestamp: { type: String }
+});
+
 const userSchema = new mongoose.Schema({
   name: { type: String },
   password: { type: String },
@@ -12,7 +18,8 @@ const userSchema = new mongoose.Schema({
   preference: { type: String },
   bio: { type: String },
   profilePicture: { type: String },
-  notifications: { type: [notificationSchema], default: undefined }
+  notifications: { type: [notificationSchema], default: undefined },
+  messages: { type: [messageSchema], default: undefined }
 });
 
 const User = mongoose.model("User", userSchema);
