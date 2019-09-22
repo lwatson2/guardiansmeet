@@ -7,7 +7,6 @@ const User = require("../models/User");
 const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
-const { multerUploads } = require("../multer");
 const saltRounds = 10;
 //Create route to upload image first then send the url back to server
 router.post("/register", async (req, res) => {
