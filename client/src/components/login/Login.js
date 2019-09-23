@@ -18,6 +18,7 @@ const LoginWrapper = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 10px;
+  flex-direction: column;
 `;
 const LoginFormWrapper = styled.div`
   height: 100%;
@@ -80,10 +81,26 @@ const ErrorMessage = styled.span`
   color: hsl(0, 85%, 27%);
   padding: 0 5px;
 `;
+const SuccessMessageContainer = styled.div`
+  margin-top: 10px;
+  background: hsl(101, 100%, 80%);
+  height: 30px;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+  color: hsl(102, 97%, 16%);
+`;
+const SuccessMessage = styled.p``;
 const Login = () => {
-  const handleLogin = async () => {
+  //For axios to use headers do axios.get(api, { headers: {"Authorization" : `Bearer ${token}`} })
+  const isAuth = sessionStorage.getItem("isAuth");
+  const handleLogin = async setValues => {
+    console.log("object");
     const res = await axios.post("/users/login", values);
     console.log(res.data);
+    document.cookie = `jwt-token=${res.data.token}`;
   };
   const { values, handleChange, handleSubmit, errors } = useForm(
     handleLogin,
@@ -92,24 +109,29 @@ const Login = () => {
   return (
     <LoginFormContainer>
       <LoginWrapper>
+        {isAuth && (
+          <SuccessMessageContainer>
+            <SuccessMessage>Congrats! You may now login </SuccessMessage>
+          </SuccessMessageContainer>
+        )}
         <form style={{ height: "100%", width: "100%" }} onSubmit={handleSubmit}>
           <LoginFormWrapper>
             <LoginFormDetailsContainer>
-              <LoginFormLabel htmlFor="name">Name</LoginFormLabel>
+              <LoginFormLabel htmlFor="username">Username</LoginFormLabel>
               <LoginFormInput
                 borderColor={
-                  errors.name ? "1px solid hsl(0, 75%, 45%)" : "none"
+                  errors.username ? "1px solid hsl(0, 75%, 45%)" : "none"
                 }
                 type="text"
-                value={values.name || ""}
+                value={values.username || ""}
                 onChange={handleChange}
-                id="name"
-                name="name"
+                id="username"
+                name="username"
                 required
               ></LoginFormInput>
-              {errors.name && (
+              {errors.username && (
                 <ErrorMessageContainer>
-                  <ErrorMessage>{errors.name}</ErrorMessage>
+                  <ErrorMessage>{errors.username}</ErrorMessage>
                 </ErrorMessageContainer>
               )}
             </LoginFormDetailsContainer>

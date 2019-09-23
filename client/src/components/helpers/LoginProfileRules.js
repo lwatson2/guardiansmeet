@@ -1,10 +1,10 @@
 const validate = values => {
   const errors = {};
-  if (!values.name) {
-    errors.name = "Please enter your name.";
+  if (!values.username) {
+    errors.username = "Please enter your username.";
   }
-  if (values.name && values.name.length > 150) {
-    errors.name = "Name cannot be longer than 150 characters.";
+  if (values.username && values.username.length > 150) {
+    errors.username = "Username cannot be longer than 150 characters.";
   }
   if (!values.password) {
     errors.password = "Please enter your password.";

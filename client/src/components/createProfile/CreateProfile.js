@@ -106,6 +106,7 @@ const PreferenceContainer = styled.div`
   @media ${device.tablet} {
     width: 220px;
     align-self: end;
+    grid-column: 1 / -1;
   }
 `;
 const PreferenceSelect = styled.select`
@@ -210,6 +211,7 @@ const CreateProfile = props => {
     formData.append("preference", values.preference);
     formData.append("age", values.age);
     formData.append("bio", values.bio);
+    formData.append("username", values.username);
     const res = await axios.post("/users/register", formData);
 
     sessionStorage.setItem("isAuth", true);
@@ -303,6 +305,45 @@ const CreateProfile = props => {
               </ErrorMessageContainer>
             )}
           </FormSectionContainer>
+          <FormSectionContainer>
+            <ProfileLabel htmlFor="name">Username</ProfileLabel>
+            <ProfileFormInput
+              borderColor={
+                errors.username ? "1px solid hsl(0, 75%, 45%)" : "none"
+              }
+              type="text"
+              value={values.username || ""}
+              onChange={handleChange}
+              id="username"
+              name="username"
+              required
+            />
+            {errors.username && (
+              <ErrorMessageContainer>
+                <ErrorMessage>{errors.username}</ErrorMessage>
+              </ErrorMessageContainer>
+            )}
+          </FormSectionContainer>
+
+          <FormSectionContainer>
+            <ProfileLabel htmlFor="age">Age</ProfileLabel>
+            <ProfileFormInput
+              borderColor={errors.age ? "1px solid hsl(0, 75%, 45%)" : "none"}
+              type="number"
+              value={values.age || ""}
+              onChange={handleChange}
+              id="age"
+              name="age"
+              min="18"
+              max="80"
+              required
+            />
+            {errors.age && (
+              <ErrorMessageContainer>
+                <ErrorMessage>{errors.age}</ErrorMessage>
+              </ErrorMessageContainer>
+            )}
+          </FormSectionContainer>
           <PreferenceContainer>
             <PreferenceSelect
               borderColor={
@@ -328,25 +369,6 @@ const CreateProfile = props => {
               </ErrorMessageContainer>
             )}
           </PreferenceContainer>
-          <FormSectionContainer>
-            <ProfileLabel htmlFor="age">Age</ProfileLabel>
-            <ProfileFormInput
-              borderColor={errors.age ? "1px solid hsl(0, 75%, 45%)" : "none"}
-              type="number"
-              value={values.age || ""}
-              onChange={handleChange}
-              id="age"
-              name="age"
-              min="18"
-              max="80"
-              required
-            />
-            {errors.age && (
-              <ErrorMessageContainer>
-                <ErrorMessage>{errors.age}</ErrorMessage>
-              </ErrorMessageContainer>
-            )}
-          </FormSectionContainer>
           <BioSectionContainer>
             <ProfileLabel htmlfor="bio">Enter a bio</ProfileLabel>
             <ProfileBio

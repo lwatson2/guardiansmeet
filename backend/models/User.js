@@ -13,6 +13,7 @@ const messageSchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema({
   name: { type: String },
+  username: { type: String },
   password: { type: String },
   age: { type: String },
   preference: { type: String },

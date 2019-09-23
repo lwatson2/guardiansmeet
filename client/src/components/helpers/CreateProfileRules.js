@@ -10,6 +10,18 @@ const validate = values => {
   if (values.name && values.name.length > 150) {
     errors.name = "Name cannot be greater than 150 characters.";
   }
+  if (values.name && values.name.length < 2) {
+    errors.name = "Name must be greater than 2 characters.";
+  }
+  if (!values.username) {
+    errors.username = "Please enter your username";
+  }
+  if (values.username && values.username.length > 150) {
+    errors.username = "Username cannot be greater than 150 characters.";
+  }
+  if (values.username && values.username.length < 2) {
+    errors.username = "Username must be greater than 2 characters.";
+  }
   if (!values.password) {
     errors.password = "Please enter your password";
   }

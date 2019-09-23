@@ -13,11 +13,11 @@ const saltRounds = 10;
 passport.use(
   new LocalStrategy(
     {
-      usernameField: "name"
+      usernameField: "username"
     },
-    (name, password, done) => {
+    (username, password, done) => {
       //Match user
-      User.findOne({ name: name })
+      User.findOne({ username: username })
         .then(user => {
           if (!user) {
             return done(null, false, {
@@ -52,10 +52,11 @@ passport.deserializeUser((id, done) => {
 
 router.post("/register", async (req, res) => {
   let profilePicture;
-  const { name, password, age, preference, bio } = req.body;
+  const { name, password, age, preference, bio, username } = req.body;
   const { file } = req.files;
+  console.log(username);
   // Checks if name already exists
-  const user = await User.findOne({ name });
+  const user = await User.findOne({ username });
   if (user) {
     res.json({
       err: true,
@@ -76,7 +77,8 @@ router.post("/register", async (req, res) => {
       bio,
       preference,
       age,
-      profilePicture
+      profilePicture,
+      username
     });
     //Create a salt of the password to replace the plain text password to save to the database
     bcrypt.genSalt(saltRounds, (err, salt) => {
@@ -94,21 +96,20 @@ router.post("/register", async (req, res) => {
   }
 });
 router.post("/login", (req, res, next) => {
-  console.log(req.body);
   passport.authenticate("local", (err, user, info) => {
     // passport uses the local strategy in the /config/passport file
-    console.log(user);
     if (user) {
       // If there's a user sign a jsonwebtoken with their creds and send that back to the client
       jwt.sign(
         { user },
-        process.env.SECRET || "mysecretkey",
+        process.env.SECRET,
         { expiresIn: "1d" },
         (err, token) => {
           res.json({
             token,
             user: {
               name: user.name,
+              username: user.username,
               profilePicture: user.profilePicture,
               preference: user.preference,
               age: user.age,
