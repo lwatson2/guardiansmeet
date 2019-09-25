@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import styled from "styled-components";
 import useForm from "../helpers/FormHelper";
 import { device } from "../helpers/mediaQueries";
 import validate from "../helpers/LoginProfileRules";
 import axios from "axios";
+
 const LoginFormContainer = styled.section`
   height: 100%;
   display: flex;
@@ -93,14 +94,15 @@ const SuccessMessageContainer = styled.div`
   color: hsl(102, 97%, 16%);
 `;
 const SuccessMessage = styled.p``;
-const Login = () => {
+const Login = props => {
   //For axios to use headers do axios.get(api, { headers: {"Authorization" : `Bearer ${token}`} })
   const isAuth = sessionStorage.getItem("isAuth");
   const handleLogin = async setValues => {
-    console.log("object");
     const res = await axios.post("/users/login", values);
-    console.log(res.data);
     document.cookie = `jwt-token=${res.data.token}`;
+    sessionStorage.setItem("userData", JSON.stringify(res.data.user));
+    setValues({});
+    props.history.push("/");
   };
   const { values, handleChange, handleSubmit, errors } = useForm(
     handleLogin,
