@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { device } from "../helpers/mediaQueries";
 const Navbar = styled.nav`
-  background: hsl(211, 12%, 42%);
+  background: hsl(211, 18%, 30%);
   height: 30px;
   position: static;
   top: 0;
@@ -11,6 +11,9 @@ const HamburgerContainer = styled.div`
   width: 100%;
   display: flex;
   height: 100%;
+  @media ${device.tablet} {
+    display: none;
+  }
 `;
 const HamburgerMenu = styled.button`
   background: transparent;
@@ -19,9 +22,6 @@ const HamburgerMenu = styled.button`
   margin-right: 20px;
   margin-left: auto;
   cursor: pointer;
-  @media ${device.tablet} {
-    display: none;
-  }
 `;
 const Line = css`
   width: 20px;
@@ -54,7 +54,7 @@ const NavItems = styled.div`
   opacity: ${props => props.opacity};
   width: 100%;
   transition: max-height 0.4s, opacity 0.6s ease;
-  background: blue;
+  background: hsl(211, 18%, 30%);
   overflow: hidden;
   display: grid;
   grid-template-rows: repeat(3, 1fr);
@@ -62,9 +62,35 @@ const NavItems = styled.div`
   justify-items: center;
   grid-gap: 10px;
   padding: 10px;
+  color: hsl(216, 33%, 97%);
+  @media ${device.tablet} {
+    max-height: 100px;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    opacity: 1;
+  }
 `;
 
-const NavListItem = styled.p``;
+const NavListItem = styled.button`
+  background: transparent;
+  border: none;
+  color: hsl(216, 33%, 97%);
+  font-size: 16px;
+  cursor: pointer;
+  ::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 2px;
+    margin: 0 auto;
+    background: hsl(216, 33%, 97%);
+    -webkit-transition: width 0.3s;
+    transition: width 0.3s;
+  }
+  :hover::after {
+    width: 100%;
+  }
+`;
 const NavBar = () => {
   const [showNav, setShowNav] = useState(false);
   return (
