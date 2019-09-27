@@ -1,6 +1,31 @@
 import React from "react";
 import styled from "styled-components";
 import { device } from "../helpers/mediaQueries";
+const Home = () => {
+  let user = sessionStorage.getItem("userData");
+  user = JSON.parse(user);
+  return (
+    <UserListContainer>
+      <UserProfileContainer>
+        <UserImageContainer>
+          <UserImage src={user.profilePicture}></UserImage>
+        </UserImageContainer>
+        <UserDetails>
+          <UserNameContainer>
+            <UserName>
+              {user.name}, {user.age}
+            </UserName>
+            <UserUsername>@{user.username}</UserUsername>
+          </UserNameContainer>
+          <UserBio>{user.bio}</UserBio>
+          <ConnectBtnContainer>
+            <ConnectBtn>Chat</ConnectBtn>
+          </ConnectBtnContainer>
+        </UserDetails>
+      </UserProfileContainer>
+    </UserListContainer>
+  );
+};
 
 const UserListContainer = styled.section`
   height: 100%;
@@ -85,30 +110,4 @@ const ConnectBtn = styled.button`
     background: hsl(273, 80%, 47%);
   }
 `;
-const Home = () => {
-  let user = sessionStorage.getItem("userData");
-  user = JSON.parse(user);
-  return (
-    <UserListContainer>
-      <UserProfileContainer>
-        <UserImageContainer>
-          <UserImage src={user.profilePicture}></UserImage>
-        </UserImageContainer>
-        <UserDetails>
-          <UserNameContainer>
-            <UserName>
-              {user.name}, {user.age}
-            </UserName>
-            <UserUsername>@{user.username}</UserUsername>
-          </UserNameContainer>
-          <UserBio>{user.bio}</UserBio>
-          <ConnectBtnContainer>
-            <ConnectBtn>Chat</ConnectBtn>
-          </ConnectBtnContainer>
-        </UserDetails>
-      </UserProfileContainer>
-    </UserListContainer>
-  );
-};
-
 export default Home;

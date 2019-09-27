@@ -5,6 +5,78 @@ import { device } from "../helpers/mediaQueries";
 import validate from "../helpers/LoginProfileRules";
 import axios from "axios";
 
+const Login = props => {
+  //For axios to use headers do axios.get(api, { headers: {"Authorization" : `Bearer ${token}`} })
+  const isAuth = sessionStorage.getItem("isAuth");
+  const handleLogin = async setValues => {
+    const res = await axios.post("/users/login", values);
+    document.cookie = `jwt-token=${res.data.token}`;
+    sessionStorage.setItem("userData", JSON.stringify(res.data.user));
+    setValues({});
+    props.history.push("/");
+  };
+  const { values, handleChange, handleSubmit, errors } = useForm(
+    handleLogin,
+    validate
+  );
+  return (
+    <LoginFormContainer>
+      <LoginWrapper>
+        {isAuth && (
+          <SuccessMessageContainer>
+            <SuccessMessage>Congrats! You may now login </SuccessMessage>
+          </SuccessMessageContainer>
+        )}
+        <form style={{ height: "100%", width: "100%" }} onSubmit={handleSubmit}>
+          <LoginFormWrapper>
+            <LoginFormDetailsContainer>
+              <LoginFormLabel htmlFor="username">Username</LoginFormLabel>
+              <LoginFormInput
+                borderColor={
+                  errors.username ? "1px solid hsl(0, 75%, 45%)" : "none"
+                }
+                type="text"
+                value={values.username || ""}
+                onChange={handleChange}
+                id="username"
+                name="username"
+                required
+              ></LoginFormInput>
+              {errors.username && (
+                <ErrorMessageContainer>
+                  <ErrorMessage>{errors.username}</ErrorMessage>
+                </ErrorMessageContainer>
+              )}
+            </LoginFormDetailsContainer>
+            <LoginFormDetailsContainer>
+              <LoginFormLabel htmlFor="password">Password</LoginFormLabel>
+              <LoginFormInput
+                borderColor={
+                  errors.password ? "1px solid hsl(0, 75%, 45%)" : "none"
+                }
+                type="password"
+                value={values.password || ""}
+                onChange={handleChange}
+                id="password"
+                name="password"
+                required
+              ></LoginFormInput>
+              {errors.password && (
+                <ErrorMessageContainer>
+                  <ErrorMessage>{errors.password}</ErrorMessage>
+                </ErrorMessageContainer>
+              )}
+            </LoginFormDetailsContainer>
+            <LoginButtonContainer>
+              <LoginButton>Submit</LoginButton>
+            </LoginButtonContainer>
+          </LoginFormWrapper>
+        </form>
+      </LoginWrapper>
+    </LoginFormContainer>
+  );
+};
+
 const LoginFormContainer = styled.section`
   height: 100%;
   display: flex;
@@ -94,76 +166,4 @@ const SuccessMessageContainer = styled.div`
   color: hsl(102, 97%, 16%);
 `;
 const SuccessMessage = styled.p``;
-const Login = props => {
-  //For axios to use headers do axios.get(api, { headers: {"Authorization" : `Bearer ${token}`} })
-  const isAuth = sessionStorage.getItem("isAuth");
-  const handleLogin = async setValues => {
-    const res = await axios.post("/users/login", values);
-    document.cookie = `jwt-token=${res.data.token}`;
-    sessionStorage.setItem("userData", JSON.stringify(res.data.user));
-    setValues({});
-    props.history.push("/");
-  };
-  const { values, handleChange, handleSubmit, errors } = useForm(
-    handleLogin,
-    validate
-  );
-  return (
-    <LoginFormContainer>
-      <LoginWrapper>
-        {isAuth && (
-          <SuccessMessageContainer>
-            <SuccessMessage>Congrats! You may now login </SuccessMessage>
-          </SuccessMessageContainer>
-        )}
-        <form style={{ height: "100%", width: "100%" }} onSubmit={handleSubmit}>
-          <LoginFormWrapper>
-            <LoginFormDetailsContainer>
-              <LoginFormLabel htmlFor="username">Username</LoginFormLabel>
-              <LoginFormInput
-                borderColor={
-                  errors.username ? "1px solid hsl(0, 75%, 45%)" : "none"
-                }
-                type="text"
-                value={values.username || ""}
-                onChange={handleChange}
-                id="username"
-                name="username"
-                required
-              ></LoginFormInput>
-              {errors.username && (
-                <ErrorMessageContainer>
-                  <ErrorMessage>{errors.username}</ErrorMessage>
-                </ErrorMessageContainer>
-              )}
-            </LoginFormDetailsContainer>
-            <LoginFormDetailsContainer>
-              <LoginFormLabel htmlFor="password">Password</LoginFormLabel>
-              <LoginFormInput
-                borderColor={
-                  errors.password ? "1px solid hsl(0, 75%, 45%)" : "none"
-                }
-                type="password"
-                value={values.password || ""}
-                onChange={handleChange}
-                id="password"
-                name="password"
-                required
-              ></LoginFormInput>
-              {errors.password && (
-                <ErrorMessageContainer>
-                  <ErrorMessage>{errors.password}</ErrorMessage>
-                </ErrorMessageContainer>
-              )}
-            </LoginFormDetailsContainer>
-            <LoginButtonContainer>
-              <LoginButton>Submit</LoginButton>
-            </LoginButtonContainer>
-          </LoginFormWrapper>
-        </form>
-      </LoginWrapper>
-    </LoginFormContainer>
-  );
-};
-
 export default Login;

@@ -5,11 +5,13 @@ import Homepage from "./components/homepage/Homepage";
 import CreateProfile from "./components/createProfile/CreateProfile";
 import Login from "./components/login/Login";
 import Home from "./components/home/Home";
+import NavBar from "./components/navbar/NavBar";
 
 function App() {
   return (
     <BrowserRouter>
       <div className="App">
+        <NavBar />
         <Switch>
           <Route exact path="/" component={Home} />
           <Route exact path="/homepage" component={Homepage} />
