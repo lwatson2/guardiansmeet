@@ -50,11 +50,16 @@ passport.deserializeUser((id, done) => {
   });
 });
 
+router.get("/userList", async (req, res) => {
+  const count = await User.countDocuments();
+  res.json({
+    count
+  });
+});
+
 router.post("/register", async (req, res) => {
-  let profilePicture;
   const { name, password, age, preference, bio, username } = req.body;
   const { file } = req.files;
-  console.log(username);
   // Checks if name already exists
   const user = await User.findOne({ username });
   if (user) {
@@ -64,13 +69,15 @@ router.post("/register", async (req, res) => {
     });
   } else {
     //If name doesn't exist create a new one
-    await cloudinary.uploader.upload(
-      file.path,
-      { transformation: [{ width: 400, height: 400, radius: "max" }] },
-      (err, image) => {
-        profilePicture = image.url;
-      }
-    );
+    if (profilePicture) {
+      await cloudinary.uploader.upload(
+        file.path,
+        { transformation: [{ width: 400, height: 400, radius: "max" }] },
+        (err, image) => {
+          profilePicture = image.url;
+        }
+      );
+    }
     const newuser = new User({
       name,
       password,
@@ -128,7 +135,11 @@ router.post("/login", (req, res, next) => {
 });
 
 router.get("/fetchusers", async (req, res) => {
-  const users = await User.find({});
+  let offset = req.query.offset;
+  offset = parseInt(offset);
+  const users = await User.find()
+    .skip(offset)
+    .limit(4);
   res.json({ users });
 });
 

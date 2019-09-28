@@ -18,6 +18,9 @@ const CreateProfile = props => {
     if (values.bio) {
       values.bio = values.bio.replace(/[\r\n]+/g, " ");
     }
+    if (!values.bio) {
+      values.bio = "";
+    }
     let formData = new FormData();
     formData.append("file", values.profilePic);
     formData.append("name", values.name);
@@ -293,6 +296,7 @@ const ProfileFormInput = styled.input`
   color: hsl(209, 20%, 25%);
   :focus {
     box-shadow: 0 5px 10px hsla(0, 0%, 0%, 0.3);
+    background: hsl(211, 15%, 95%);
   }
   @media ${device.tablet} {
     font-size: 16px;
@@ -326,7 +330,8 @@ const PreferenceSelect = styled.select`
   border-radius: 10px;
   cursor: pointer;
   :focus {
-    box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.3);
+    box-shadow: 0 5px 10px hsla(0, 0%, 0%, 0.3);
+    background: hsl(211, 15%, 95%);
   }
   @media ${device.tablet} {
     font-size: 16px;
@@ -350,7 +355,8 @@ const ProfileBio = styled.textarea`
   color: hsl(209, 20%, 25%);
   border: ${props => props.borderColor};
   :focus {
-    box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.3);
+    box-shadow: 0 5px 10px hsla(0, 0%, 0%, 0.3);
+    background: hsl(211, 15%, 95%);
   }
   @media ${device.tablet} {
     font-size: 16px;

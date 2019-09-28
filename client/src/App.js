@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Homepage from "./components/homepage/Homepage";
@@ -7,7 +7,7 @@ import Login from "./components/login/Login";
 import Home from "./components/home/Home";
 import NavBar from "./components/navbar/NavBar";
 import Cookies from "js-cookie";
-
+import axios from "axios";
 const LoggedInRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
@@ -18,6 +18,12 @@ const LoggedInRoute = ({ component: Component, ...rest }) => (
 );
 
 function App() {
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const res = await axios.get("/users/userList");
+  //   };
+  //   fetchData();
+  // }, []);
   return (
     <BrowserRouter>
       <div className="App">

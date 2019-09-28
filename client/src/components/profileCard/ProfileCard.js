@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { device } from "../helpers/mediaQueries";
 import ProfilePicPlaceHolder from "../../images/Portrait_placeholder.png";
+import Cookies from "js-cookie";
 
 const ProfileCard = ({ user }) => {
   return (
@@ -21,10 +22,12 @@ const ProfileCard = ({ user }) => {
             </UserName>
             <UserUsername>@{user.username}</UserUsername>
           </UserNameContainer>
-          <UserBio>{user.bio}</UserBio>
-          <ConnectBtnContainer>
-            <ConnectBtn>Chat</ConnectBtn>
-          </ConnectBtnContainer>
+          {user.bio && <UserBio>{user.bio}</UserBio>}
+          {Cookies.get("token") && (
+            <ConnectBtnContainer>
+              <ConnectBtn>Chat</ConnectBtn>
+            </ConnectBtnContainer>
+          )}
         </UserDetails>
       </UserProfileContainer>
     </>
@@ -42,6 +45,7 @@ const UserProfileContainer = styled.div`
   justify-content: center;
   border-radius: 10px;
   box-shadow: 0 15px 30px hsla(0, 0%, 0%, 0.2);
+  margin: 50px 0;
   @media ${device.tablet} {
     width: 392px;
   }
