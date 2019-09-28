@@ -8,7 +8,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
 const saltRounds = 10;
-
+// Use  db.students.find().skip(20).limit(20) for fetching more users
 // Local Strategy for passport
 passport.use(
   new LocalStrategy(
@@ -125,6 +125,11 @@ router.post("/login", (req, res, next) => {
       });
     }
   })(req, res, next);
+});
+
+router.get("/fetchusers", async (req, res) => {
+  const users = await User.find({});
+  res.json({ users });
 });
 
 module.exports = router;

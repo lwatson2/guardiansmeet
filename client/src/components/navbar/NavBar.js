@@ -1,9 +1,55 @@
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { device } from "../helpers/mediaQueries";
+import Cookies from "js-cookie";
+
+const NavBar = () => {
+  const [showNav, setShowNav] = useState(false);
+  return (
+    <Navbar>
+      <HamburgerContainer>
+        <HamburgerMenu onClick={() => setShowNav(!showNav)}>
+          <TopHamburgerLine transform={showNav ? "rotate(45deg)" : "none"} />
+          <MiddleHamburgerLine
+            opacity={showNav ? "0" : "1"}
+            transform={showNav ? "translateX(-16px)" : "none"}
+          />
+          <BottomHamburgerLine
+            transform={showNav ? "translateX(-1px) rotate(-45deg)" : "none"}
+          />
+        </HamburgerMenu>
+      </HamburgerContainer>
+      {Cookies.get("token") ? (
+        <NavItems
+          maxHeight={showNav ? "300px" : "0"}
+          opacity={showNav ? "1" : "0"}
+          columns={"repeat(4, 1fr)"}
+          rows={"repeat(3, 1fr)"}
+        >
+          <NavListItem>Messages</NavListItem>
+          <NavListItem>Profile</NavListItem>
+          <NavListItem>Notifications</NavListItem>
+          <NavListItem>Logout</NavListItem>
+        </NavItems>
+      ) : (
+        <NavItems
+          maxHeight={showNav ? "300px" : "0"}
+          opacity={showNav ? "1" : "0"}
+          rows={"1fr"}
+          columns={"1fr"}
+        >
+          <NavListItem>Login</NavListItem>
+        </NavItems>
+      )}
+    </Navbar>
+  );
+};
+
+export default NavBar;
+
 const Navbar = styled.nav`
   background: hsl(211, 18%, 30%);
-  height: 30px;
+  height: 45px;
   position: static;
   top: 0;
 `;
@@ -27,7 +73,7 @@ const Line = css`
   width: 20px;
   height: 2px;
   background: hsl(210, 24%, 16%);
-  transition: all 0.2s ease;
+  transition: all 0.4s ease;
   display: block;
   background-color: hsl(216, 33%, 97%);
 `;
@@ -52,20 +98,21 @@ const NavItems = styled.div`
   max-height: ${props => props.maxHeight};
   height: auto;
   opacity: ${props => props.opacity};
-  width: 100%;
   transition: max-height 0.4s, opacity 0.6s ease;
   background: hsl(211, 18%, 30%);
   overflow: hidden;
   display: grid;
-  grid-template-rows: repeat(3, 1fr);
+  grid-template-rows: ${props => props.rows};
   align-items: center;
   justify-items: center;
   grid-gap: 10px;
   padding: 10px;
   color: hsl(216, 33%, 97%);
+  position: relative;
+  z-index: 2;
   @media ${device.tablet} {
     max-height: 100px;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: ${props => props.columns};
     grid-template-rows: 1fr;
     opacity: 1;
   }
@@ -91,33 +138,3 @@ const NavListItem = styled.button`
     width: 100%;
   }
 `;
-const NavBar = () => {
-  const [showNav, setShowNav] = useState(false);
-  return (
-    <Navbar>
-      <HamburgerContainer>
-        <HamburgerMenu onClick={() => setShowNav(!showNav)}>
-          <TopHamburgerLine transform={showNav ? "rotate(45deg)" : "none"} />
-          <MiddleHamburgerLine
-            opacity={showNav ? "0" : "1"}
-            transform={showNav ? "translateX(-16px)" : "none"}
-          />
-          <BottomHamburgerLine
-            transform={showNav ? "translateX(-1px) rotate(-45deg)" : "none"}
-          />
-        </HamburgerMenu>
-      </HamburgerContainer>
-      <NavItems
-        height={showNav ? "auto" : null}
-        maxHeight={showNav ? "300px" : "0"}
-        opacity={showNav ? "1" : "0"}
-      >
-        <NavListItem>Messages</NavListItem>
-        <NavListItem>Profile</NavListItem>
-        <NavListItem>Notifications</NavListItem>
-      </NavItems>
-    </Navbar>
-  );
-};
-
-export default NavBar;

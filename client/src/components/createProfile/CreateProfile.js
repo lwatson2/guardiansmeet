@@ -210,15 +210,10 @@ const CreateProfile = props => {
 };
 
 const ProfileContainer = styled.section`
-  height: 100%;
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   margin: 50px 0;
-  @media ${device.tablet} {
-    margin: 0;
-  }
 `;
 const ProfileFormContainer = styled.div`
   display: grid;
