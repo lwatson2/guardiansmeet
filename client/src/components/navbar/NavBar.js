@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { device } from "../helpers/mediaQueries";
 import Cookies from "js-cookie";
+import { Link } from "react-router-dom";
 
 const NavBar = () => {
   const [showNav, setShowNav] = useState(false);
@@ -36,9 +37,19 @@ const NavBar = () => {
           maxHeight={showNav ? "300px" : "0"}
           opacity={showNav ? "1" : "0"}
           rows={"1fr"}
-          columns={"1fr"}
+          columns={"repeat(3, 1fr)"}
         >
-          <NavListItem>Login</NavListItem>
+          <Link to="/">
+            <NavListItem onClick={() => setShowNav(false)}>Home</NavListItem>
+          </Link>
+          <Link to="/new-profile">
+            <NavListItem onClick={() => setShowNav(false)}>
+              Create Profile
+            </NavListItem>
+          </Link>
+          <Link to="/login">
+            <NavListItem onClick={() => setShowNav(false)}>Login</NavListItem>
+          </Link>
         </NavItems>
       )}
     </Navbar>

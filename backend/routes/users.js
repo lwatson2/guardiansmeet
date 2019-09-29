@@ -21,7 +21,7 @@ passport.use(
         .then(user => {
           if (!user) {
             return done(null, false, {
-              message: "That name is not registered."
+              message: "That username is not registered."
             });
           }
 
@@ -65,7 +65,7 @@ router.post("/register", async (req, res) => {
   if (user) {
     res.json({
       err: true,
-      msg: "User already exists"
+      msg: "Username already exists"
     });
   } else {
     //If name doesn't exist create a new one
@@ -91,6 +91,7 @@ router.post("/register", async (req, res) => {
     bcrypt.genSalt(saltRounds, (err, salt) => {
       bcrypt.hash(newuser.password, salt, async (err, hash) => {
         if (err) {
+          res.json({ err });
         } else {
           newuser.password = hash;
           await newuser.save();
@@ -112,6 +113,11 @@ router.post("/login", (req, res, next) => {
         process.env.SECRET,
         { expiresIn: "1d" },
         (err, token) => {
+          if (err) {
+            res.json({
+              err
+            });
+          }
           res.json({
             token,
             user: {
@@ -139,7 +145,7 @@ router.get("/fetchusers", async (req, res) => {
   offset = parseInt(offset);
   const users = await User.find()
     .skip(offset)
-    .limit(4);
+    .limit(2);
   res.json({ users });
 });
 

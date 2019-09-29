@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import useForm from "../helpers/FormHelper";
 import { device } from "../helpers/mediaQueries";
@@ -9,8 +9,12 @@ import Cookies from "js-cookie";
 const Login = props => {
   //For axios to use headers do axios.get(api, { headers: {"Authorization" : `Bearer ${token}`} })
   const isAuth = sessionStorage.getItem("isAuth");
+  const [errMsg, setErrMsg] = useState("");
   const handleLogin = async setValues => {
     const res = await axios.post("/users/login", values);
+    if (res.data.err) {
+      return setErrMsg(res.data.err.message);
+    }
     Cookies.set("token", res.data.token);
     sessionStorage.setItem("userData", JSON.stringify(res.data.user));
     setValues({});
@@ -27,6 +31,11 @@ const Login = props => {
           <SuccessMessageContainer>
             <SuccessMessage>Congrats! You may now login </SuccessMessage>
           </SuccessMessageContainer>
+        )}
+        {errMsg && (
+          <ErrorMessageContainer>
+            <ErrorMessage>{errMsg}</ErrorMessage>
+          </ErrorMessageContainer>
         )}
         <form style={{ height: "100%", width: "100%" }} onSubmit={handleSubmit}>
           <LoginFormWrapper>

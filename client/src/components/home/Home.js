@@ -23,29 +23,32 @@ const Home = () => {
     fetchData();
   }, []);
   useEffect(() => {
-    if (onScreen && userList.length > 0) {
-      console.log("on screen");
+    console.log(onScreen);
+    if (onScreen && userList.length > 0 && userList.length < userCount) {
+      const offsetUserQuery = offset + 2;
+      let newUserList = [];
+      const fetchData = async () => {
+        const res = await axios.get(
+          `/users/fetchusers?offset=${offsetUserQuery}`
+        );
+        newUserList = userList.concat(res.data.users);
+        setOffset(offsetUserQuery);
+        setUserList(newUserList);
+      };
+      fetchData();
     }
-    // if (onScreen) {
-    //   const offsetUserQuery = offset + 4;
-    //   let newUserList = [];
-    //   const fetchData = async () => {
-    //     const res = await axios.get(
-    //       `/users/fetchusers?offset=${offsetUserQuery}`
-    //     );
-    //     newUserList = [...userList, res.data.users];
-    //     setOffset(offsetUserQuery);
-    //     setUserList(newUserList);
-    //   };
-    //   fetchData();
-    // }
   }, [onScreen]);
   return (
     <UserListContainer>
       {userList.map(user => (
         <ProfileCard user={user} />
       ))}
-      <div ref={ref}>Loading</div>
+      <div
+        style={userList.length < userCount ? { opacity: 1 } : { opacity: 0 }}
+        ref={ref}
+      >
+        Loading
+      </div>
     </UserListContainer>
   );
 };

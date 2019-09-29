@@ -6,6 +6,7 @@ import axios from "axios";
 import { device } from "../helpers/mediaQueries";
 const CreateProfile = props => {
   const [profilePicture, setProfilePicture] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
   const handleProfilePicture = event => {
     // let formData = new FormData();
     // formData.append("file", event.target.files[0]);
@@ -30,6 +31,9 @@ const CreateProfile = props => {
     formData.append("bio", values.bio);
     formData.append("username", values.username);
     const res = await axios.post("/users/register", formData);
+    if (res.data.err) {
+      return setErrorMessage(res.data.msg);
+    }
 
     sessionStorage.setItem("isAuth", true);
     setValues({});
@@ -85,6 +89,11 @@ const CreateProfile = props => {
                 </ErrorMessageContainer>
               )}
             </ProfilePictureContainer>
+          )}
+          {errorMessage && (
+            <ErrorMessageContainer>
+              <ErrorMessage>{errorMessage}</ErrorMessage>
+            </ErrorMessageContainer>
           )}
           <FormSectionContainer>
             <ProfileLabel htmlFor="name">Name</ProfileLabel>
