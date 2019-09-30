@@ -1,15 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import styled, { css } from "styled-components";
 import { device } from "../helpers/mediaQueries";
 import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { UserContext } from "../context/UserContext";
 
 const NavBar = () => {
   const [showNav, setShowNav] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const token = Cookies.get("token");
+  const [user, setUser] = useContext(UserContext);
 
-  const logout = () => {
-    sessionStorage.removeItem("userData");
+  const logout = async () => {
+    setLoggedIn(false);
+    setUser({});
+    Cookies.remove("token");
+    await axios.get("/users/logout");
+    setShowNav(false);
   };
+  useEffect(() => {
+    console.log(user);
+    if (token) {
+      setLoggedIn(true);
+    }
+  }, [token]);
   return (
     <Navbar>
       <HamburgerContainer>
@@ -24,7 +39,7 @@ const NavBar = () => {
           />
         </HamburgerMenu>
       </HamburgerContainer>
-      {Cookies.get("token") ? (
+      {loggedIn ? (
         <NavItems
           maxHeight={showNav ? "300px" : "0"}
           opacity={showNav ? "1" : "0"}
@@ -39,7 +54,7 @@ const NavBar = () => {
           <Link to="/">
             <NavListItem onClick={() => setShowNav(false)}>Home</NavListItem>
           </Link>
-          <NavListItem onClick={() => setShowNav(false)}>Logout</NavListItem>
+          <NavListItem onClick={() => logout()}>Logout</NavListItem>
         </NavItems>
       ) : (
         <NavItems

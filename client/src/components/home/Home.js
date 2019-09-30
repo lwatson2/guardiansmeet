@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import styled from "styled-components";
 import ProfileCard from "../profileCard/ProfileCard";
 import axios from "axios";
 import useOnScreen from "../helpers/useInfiniteScroll";
 import { device } from "../helpers/mediaQueries";
+import { UserContext } from "../context/UserContext";
 
 const Home = () => {
   const [userList, setUserList] = useState([]);
@@ -11,30 +12,27 @@ const Home = () => {
   const [offset, setOffset] = useState(0);
   const ref = useRef();
   const onScreen = useOnScreen(ref);
-  let user = sessionStorage.getItem("userData");
-  user = JSON.parse(user);
+  const [user, setUser] = useContext(UserContext);
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await axios.get(`/users/fetchusers?offset=${offset}`);
-      let users = res.data.users;
-      if (user) {
-        users = users.filter(users => users.username !== user.username);
-      }
-      setUserList(users);
-      const response = await axios.get("/users/userList");
-      const userCountNum = response.data.count - 1;
-      setuserCount(userCountNum);
-    };
-    fetchData();
+    fetchUsers();
   }, []);
   useEffect(() => {
-    if (onScreen && userList.length > 0 && userList.length < userCount) {
+    if (userList.length > userCount || offset === userCount) {
+      return;
+    }
+    if (onScreen && userList.length > 0 && userList.length <= userCount) {
       const offsetUserQuery = offset + 2;
       let newUserList = [];
+      let res;
+      console.log("false");
       const fetchData = async () => {
-        const res = await axios.get(
-          `/users/fetchusers?offset=${offsetUserQuery}`
-        );
+        if (user.username) {
+          res = await axios.get(
+            `/users/fetchusers?offset=${offsetUserQuery}&username=${user.username}`
+          );
+        } else {
+          res = await axios.get(`/users/fetchusers?offset=${offsetUserQuery}`);
+        }
         newUserList = userList.concat(res.data.users);
         setOffset(offsetUserQuery);
         setUserList(newUserList);
@@ -42,13 +40,35 @@ const Home = () => {
       fetchData();
     }
   }, [onScreen]);
+  useEffect(() => {
+    fetchUsers();
+  }, [user]);
+  const fetchUsers = async () => {
+    let res;
+    if (user.username) {
+      res = await axios.get(
+        `/users/fetchusers?offset=${offset}&username=${user.username}`
+      );
+    } else {
+      res = await axios.get(`/users/fetchusers?offset=${offset}`);
+    }
+    let users = res.data.users;
+    setUserList(users);
+    const response = await axios.get("/users/userList");
+    let userCountNum = response.data.count;
+    setuserCount(userCountNum);
+  };
+
+  const handleChat = user => {
+    console.log(user);
+  };
   return (
     <UserListContainer>
       {userList.map(user => (
-        <ProfileCard user={user} />
+        <ProfileCard handleChat={handleChat} user={user} />
       ))}
       <LoadingContainer
-        opactiy={userList.length < userCount ? "1" : "0"}
+        opactiy={userList.length >= userCount && onScreen ? "0" : "1"}
         ref={ref}
       >
         Loading
@@ -70,7 +90,7 @@ const UserListContainer = styled.section`
   }
 `;
 const LoadingContainer = styled.div`
-  opacity: ${props => props.opactiy};
+  opacity: 0;
   align-self: end;
 `;
 export default Home;

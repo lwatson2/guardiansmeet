@@ -4,7 +4,7 @@ import { device } from "../helpers/mediaQueries";
 import ProfilePicPlaceHolder from "../../images/Portrait_placeholder.png";
 import Cookies from "js-cookie";
 
-const ProfileCard = ({ user }) => {
+const ProfileCard = ({ user, handleChat }) => {
   return (
     <>
       <UserProfileContainer>
@@ -25,7 +25,7 @@ const ProfileCard = ({ user }) => {
           {user.bio && <UserBio>{user.bio}</UserBio>}
           {Cookies.get("token") && (
             <ConnectBtnContainer>
-              <ConnectBtn>Chat</ConnectBtn>
+              <ConnectBtn onClick={() => handleChat(user)}>Chat</ConnectBtn>
             </ConnectBtnContainer>
           )}
         </UserDetails>

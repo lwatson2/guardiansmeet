@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import styled from "styled-components";
 import useForm from "../helpers/FormHelper";
 import { device } from "../helpers/mediaQueries";
 import validate from "../helpers/LoginProfileRules";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { UserContext } from "../context/UserContext";
 
 const Login = props => {
   //For axios to use headers do axios.get(api, { headers: {"Authorization" : `Bearer ${token}`} })
   const isAuth = sessionStorage.getItem("isAuth");
+  const [user, setUser] = useContext(UserContext);
   const [errMsg, setErrMsg] = useState("");
   const handleLogin = async setValues => {
     const res = await axios.post("/users/login", values);
@@ -16,7 +18,7 @@ const Login = props => {
       return setErrMsg(res.data.err.message);
     }
     Cookies.set("token", res.data.token);
-    sessionStorage.setItem("userData", JSON.stringify(res.data.user));
+    setUser(res.data.user);
     setValues({});
     props.history.push("/");
   };

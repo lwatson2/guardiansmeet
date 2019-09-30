@@ -142,11 +142,26 @@ router.post("/login", (req, res, next) => {
 
 router.get("/fetchusers", async (req, res) => {
   let offset = req.query.offset;
+  let username = req.query.username;
+  let users;
   offset = parseInt(offset);
-  const users = await User.find()
-    .skip(offset)
-    .limit(2);
+  if (username) {
+    users = await User.find({
+      username: { $ne: username }
+    })
+      .skip(offset)
+      .limit(2);
+  } else {
+    users = await User.find()
+      .skip(offset)
+      .limit(2);
+  }
   res.json({ users });
+});
+
+router.get("/logout", (req, res) => {
+  req.logOut();
+  res.sendStatus(200);
 });
 
 module.exports = router;
