@@ -6,6 +6,10 @@ import { Link } from "react-router-dom";
 
 const NavBar = () => {
   const [showNav, setShowNav] = useState(false);
+
+  const logout = () => {
+    sessionStorage.removeItem("userData");
+  };
   return (
     <Navbar>
       <HamburgerContainer>
@@ -24,13 +28,18 @@ const NavBar = () => {
         <NavItems
           maxHeight={showNav ? "300px" : "0"}
           opacity={showNav ? "1" : "0"}
-          columns={"repeat(4, 1fr)"}
+          columns={"repeat(5, 1fr)"}
           rows={"repeat(3, 1fr)"}
         >
-          <NavListItem>Messages</NavListItem>
-          <NavListItem>Profile</NavListItem>
-          <NavListItem>Notifications</NavListItem>
-          <NavListItem>Logout</NavListItem>
+          <NavListItem onClick={() => setShowNav(false)}>Messages</NavListItem>
+          <NavListItem onClick={() => setShowNav(false)}>Profile</NavListItem>
+          <NavListItem onClick={() => setShowNav(false)}>
+            Notifications
+          </NavListItem>
+          <Link to="/">
+            <NavListItem onClick={() => setShowNav(false)}>Home</NavListItem>
+          </Link>
+          <NavListItem onClick={() => setShowNav(false)}>Logout</NavListItem>
         </NavItems>
       ) : (
         <NavItems

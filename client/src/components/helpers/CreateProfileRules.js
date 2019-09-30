@@ -45,6 +45,10 @@ const validate = values => {
   } else if (values.age < 18) {
     errors.age = "You must be 18 or over to create a profile.";
   }
+  if (!values.bio) {
+    errors.bio = "Please enter a bio";
+  }
+
   if (values.bio && values.bio.length > 150) {
     errors.bio = "Please limit bio to 150 characters.";
   }

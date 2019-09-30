@@ -4,6 +4,7 @@ import useForm from "../helpers/FormHelper";
 import validate from "../helpers/CreateProfileRules";
 import axios from "axios";
 import { device } from "../helpers/mediaQueries";
+
 const CreateProfile = props => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -205,6 +206,7 @@ const CreateProfile = props => {
               name="bio"
               value={values.bio}
               id="bio"
+              required
             ></ProfileBio>
             {errors.bio && (
               <ErrorMessageContainer>
