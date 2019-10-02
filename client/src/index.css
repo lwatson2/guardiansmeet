@@ -29,3 +29,7 @@ a {
   text-decoration: none;
   color: inherit;
 }
+.Toastify__toast--default {
+  background: #934fed !important;
+  color: hsl(216, 33%, 97%) !important;
+}

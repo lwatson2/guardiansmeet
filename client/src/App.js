@@ -7,7 +7,8 @@ import Login from "./components/login/Login";
 import Home from "./components/home/Home";
 import NavBar from "./components/navbar/NavBar";
 import Cookies from "js-cookie";
-import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./components/context/UserContext";
 
 const LoggedInRoute = ({ component: Component, ...rest }) => (
@@ -34,7 +35,17 @@ function App() {
               path="/new-profile"
               component={CreateProfile}
             />
-          </Switch>
+          </Switch>{" "}
+          <ToastContainer
+            position="top-right"
+            autoClose={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnVisibilityChange
+            draggable
+            draggablePercent={60}
+          />
         </div>
       </UserProvider>
     </BrowserRouter>

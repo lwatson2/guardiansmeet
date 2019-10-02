@@ -11,6 +11,11 @@ const messageSchema = new mongoose.Schema({
   timestamp: { type: String }
 });
 
+const matchedSchema = new mongoose.Schema({
+  username: { type: String },
+  id: { type: String }
+});
+
 const userSchema = new mongoose.Schema({
   name: { type: String },
   username: { type: String },
@@ -20,7 +25,8 @@ const userSchema = new mongoose.Schema({
   bio: { type: String },
   profilePicture: { type: String },
   notifications: { type: [notificationSchema], default: undefined },
-  messages: { type: [messageSchema], default: undefined }
+  messages: { type: [messageSchema], default: undefined },
+  matched: { type: [matchedSchema], default: undefined }
 });
 
 const User = mongoose.model("User", userSchema);

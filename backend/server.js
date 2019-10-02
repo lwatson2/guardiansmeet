@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const user = require("./routes/users");
 const cloudinary = require("cloudinary").v2;
 const formData = require("express-form-data");
+const socket = require("socket.io");
 
 const PORT = process.env.PORT || 5000;
 const app = express();
