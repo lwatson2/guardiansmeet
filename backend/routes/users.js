@@ -158,7 +158,21 @@ router.get("/fetchusers", async (req, res) => {
   }
   res.json({ users });
 });
-
+router.get("/refreshUser", async (req, res) => {
+  let id = req.query.id;
+  const user = await User.findOne({ _id: id });
+  res.json({
+    user: {
+      name: user.name,
+      username: user.username,
+      profilePicture: user.profilePicture,
+      preference: user.preference,
+      age: user.age,
+      bio: user.bio,
+      id: user._id
+    }
+  });
+});
 router.get("/logout", (req, res) => {
   req.logOut();
   res.sendStatus(200);

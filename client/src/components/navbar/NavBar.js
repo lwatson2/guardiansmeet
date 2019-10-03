@@ -19,7 +19,7 @@ const NavBar = () => {
   const token = Cookies.get("token");
   const [user, setUser] = useContext(UserContext);
 
-  const showToast = () =>
+  const showToast = () => {
     toast(<Msg />, {
       position: "top-right",
       autoClose: false,
@@ -28,6 +28,8 @@ const NavBar = () => {
       pauseOnHover: false,
       draggable: true
     });
+    //socket.emit("chat", { user, clickedUser });
+  };
   const logout = async () => {
     setLoggedIn(false);
     setUser({});
@@ -36,7 +38,17 @@ const NavBar = () => {
     setShowNav(false);
   };
   useEffect(() => {
-    console.log(user);
+    if (!user.username && token) {
+      const { user } = JSON.parse(atob(token.split(".")[1]));
+      const { _id } = user;
+      const fetchUser = async () => {
+        const { data } = await axios.get(`/users/refreshUser?id=${_id}`);
+        setUser(data.user);
+      };
+      fetchUser();
+    }
+  }, []);
+  useEffect(() => {
     if (token) {
       setLoggedIn(true);
     }

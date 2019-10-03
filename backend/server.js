@@ -29,3 +29,11 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_SECRET
 });
+
+//Socket.io setup
+const io = socket(server);
+
+io.on("connection", socket => {
+  socket.on("test", data => console.log(data));
+  socket.on("sendChatNotif");
+});

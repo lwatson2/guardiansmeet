@@ -5,6 +5,8 @@ import axios from "axios";
 import useOnScreen from "../helpers/useInfiniteScroll";
 import { device } from "../helpers/mediaQueries";
 import { UserContext } from "../context/UserContext";
+import io from "socket.io-client";
+const socket = io.connect("http://localhost:5000", { secure: true });
 
 const Home = () => {
   const [userList, setUserList] = useState([]);
@@ -13,6 +15,7 @@ const Home = () => {
   const ref = useRef();
   const onScreen = useOnScreen(ref);
   const [user, setUser] = useContext(UserContext);
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -59,8 +62,9 @@ const Home = () => {
     setuserCount(userCountNum);
   };
 
-  const handleChat = user => {
-    console.log(user);
+  const handleChat = clickedUser => {
+    console.log(clickedUser);
+    socket.emit("");
   };
   return (
     <UserListContainer>
