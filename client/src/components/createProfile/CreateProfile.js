@@ -164,6 +164,7 @@ const CreateProfile = props => {
               min="18"
               max="80"
               required
+              width="150px"
             />
             {errors.age && (
               <ErrorMessageContainer>
@@ -240,7 +241,7 @@ const ProfileFormContainer = styled.div`
   color: hsl(214, 33%, 97%);
   border-radius: 20px;
   width: 300px;
-  grid-template-columns: 1fr;
+  grid-template-columns: 300px;
   @media ${device.tablet} {
     padding: 10px;
     width: 600px;
@@ -305,6 +306,8 @@ const ProfileFormInput = styled.input`
   padding-left: 10px;
   background: hsl(211, 16%, 82%);
   color: hsl(209, 20%, 25%);
+  width: ${props => props.width};
+  transition: all 0.2s ease;
   :focus {
     box-shadow: 0 5px 10px hsla(0, 0%, 0%, 0.3);
     background: hsl(211, 15%, 95%);
@@ -340,6 +343,7 @@ const PreferenceSelect = styled.select`
   border: ${props => props.borderColor};
   border-radius: 10px;
   cursor: pointer;
+  padding-left: 5px;
   :focus {
     box-shadow: 0 5px 10px hsla(0, 0%, 0%, 0.3);
     background: hsl(211, 15%, 95%);

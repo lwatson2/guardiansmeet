@@ -5,8 +5,19 @@ import axios from "axios";
 import useOnScreen from "../helpers/useInfiniteScroll";
 import { device } from "../helpers/mediaQueries";
 import { UserContext } from "../context/UserContext";
+import { toast } from "react-toastify";
 import io from "socket.io-client";
 const socket = io.connect("http://localhost:5000", { secure: true });
+
+const Msg = ({ user }) => {
+  console.log(user);
+  return (
+    <ToastMessageContainer>
+      <ToastMessage> {user} wants to chat</ToastMessage>
+      <ToastProfileButton>View Profile</ToastProfileButton>
+    </ToastMessageContainer>
+  );
+};
 
 const Home = () => {
   const [userList, setUserList] = useState([]);
@@ -63,11 +74,25 @@ const Home = () => {
     setuserCount(userCountNum);
   };
   const socketFunctions = () => {
-    socket.on("recievedChatRequest", data => console.log(data));
+    socket.on("recievedChatRequest", data => {
+      if (data.currentUser === user.username) {
+        showToast(data.requestedUser);
+      }
+    });
   };
   const handleChat = clickedUser => {
     console.log(clickedUser);
     socket.emit("sendChatRequest", { user, clickedUser });
+  };
+  const showToast = username => {
+    toast(<Msg user={username} />, {
+      position: "top-right",
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true
+    });
   };
   return (
     <UserListContainer>
@@ -83,6 +108,27 @@ const Home = () => {
     </UserListContainer>
   );
 };
+
+const ToastMessageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+const ToastMessage = styled.span`
+  margin-bottom: 5px;
+`;
+const ToastProfileButton = styled.button`
+  background: hsl(209, 20%, 25%);
+  color: hsl(216, 33%, 97%);
+  border: none;
+  outline: none;
+  height: 30px;
+  width: 100px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: end;
+  margin-left: auto;
+`;
 
 const UserListContainer = styled.section`
   height: 100%;

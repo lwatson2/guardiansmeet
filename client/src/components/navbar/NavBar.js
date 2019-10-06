@@ -5,31 +5,13 @@ import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
-import { toast } from "react-toastify";
 
-const Msg = ({ closeToast }) => (
-  <ToastMessageContainer>
-    <ToastMessage>Lorem Episum von funck houdini wants to chat</ToastMessage>
-    <ToastProfileButton>View Profile</ToastProfileButton>
-  </ToastMessageContainer>
-);
 const NavBar = () => {
   const [showNav, setShowNav] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const token = Cookies.get("token");
   const [user, setUser] = useContext(UserContext);
 
-  const showToast = () => {
-    toast(<Msg />, {
-      position: "top-right",
-      autoClose: false,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true
-    });
-    //socket.emit("chat", { user, clickedUser });
-  };
   const logout = async () => {
     setLoggedIn(false);
     setUser({});
@@ -77,7 +59,6 @@ const NavBar = () => {
           </Link>
           <NavListItem onClick={() => setShowNav(false)}>Messages</NavListItem>
           <NavListItem onClick={() => setShowNav(false)}>Profile</NavListItem>
-          <NavListItem onClick={showToast}>Notifications</NavListItem>
           <NavListItem onClick={() => logout()}>Logout</NavListItem>
         </NavItems>
       ) : (
@@ -103,26 +84,6 @@ const NavBar = () => {
 };
 
 export default NavBar;
-const ToastMessageContainer = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-`;
-const ToastMessage = styled.span`
-  margin-bottom: 5px;
-`;
-const ToastProfileButton = styled.button`
-  background: hsl(209, 20%, 25%);
-  color: hsl(216, 33%, 97%);
-  border: none;
-  outline: none;
-  height: 30px;
-  width: 100px;
-  font-size: 14px;
-  border-radius: 5px;
-  cursor: pointer;
-  align-self: end;
-`;
 const Navbar = styled.nav`
   background: hsl(211, 18%, 30%);
   height: 45px;
