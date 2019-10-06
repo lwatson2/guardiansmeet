@@ -60,6 +60,7 @@ router.get("/userList", async (req, res) => {
 router.post("/register", async (req, res) => {
   const { name, password, age, preference, bio, username } = req.body;
   const { file } = req.files;
+  let profilePicture
   // Checks if name already exists
   const user = await User.findOne({ username });
   if (user) {
@@ -69,7 +70,7 @@ router.post("/register", async (req, res) => {
     });
   } else {
     //If name doesn't exist create a new one
-    if (profilePicture) {
+    if (req.body.profilePicture) {
       await cloudinary.uploader.upload(
         file.path,
         { transformation: [{ width: 400, height: 400, radius: "max" }] },
@@ -77,6 +78,8 @@ router.post("/register", async (req, res) => {
           profilePicture = image.url;
         }
       );
+    } else {
+      profilePicture = null
     }
     const newuser = new User({
       name,

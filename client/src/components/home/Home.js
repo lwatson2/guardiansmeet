@@ -18,6 +18,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchUsers();
+    socketFunctions();
   }, []);
   useEffect(() => {
     if (userList.length > userCount || offset === userCount) {
@@ -61,10 +62,12 @@ const Home = () => {
     let userCountNum = response.data.count;
     setuserCount(userCountNum);
   };
-
+  const socketFunctions = () => {
+    socket.on("recievedChatRequest", data => console.log(data));
+  };
   const handleChat = clickedUser => {
     console.log(clickedUser);
-    socket.emit("");
+    socket.emit("sendChatRequest", { user, clickedUser });
   };
   return (
     <UserListContainer>

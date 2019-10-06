@@ -35,5 +35,11 @@ const io = socket(server);
 
 io.on("connection", socket => {
   socket.on("test", data => console.log(data));
-  socket.on("sendChatNotif");
+  socket.on("sendChatRequest", data => {
+    socket.emit("recievedChatRequest", {
+      requestedUser: data.user.name,
+      currentUser: data.clickedUser.username
+    });
+    console.log(data);
+  });
 });

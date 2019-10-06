@@ -10,6 +10,10 @@ const messageSchema = new mongoose.Schema({
   sender: { type: String },
   timestamp: { type: String }
 });
+const messageGroupSchema = new mongoose.Schema({
+  name: { type: String },
+  messages: { type: messageSchema }
+});
 
 const matchedSchema = new mongoose.Schema({
   username: { type: String },
@@ -25,7 +29,7 @@ const userSchema = new mongoose.Schema({
   bio: { type: String },
   profilePicture: { type: String },
   notifications: { type: [notificationSchema], default: undefined },
-  messages: { type: [messageSchema], default: undefined },
+  messages: { type: [messageGroupSchema], default: undefined },
   matched: { type: [matchedSchema], default: undefined }
 });
 
