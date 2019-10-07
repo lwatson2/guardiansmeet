@@ -34,12 +34,10 @@ cloudinary.config({
 const io = socket(server);
 
 io.on("connection", socket => {
-  socket.on("test", data => console.log(data));
   socket.on("sendChatRequest", data => {
     socket.broadcast.emit("recievedChatRequest", {
-      requestedUser: data.user.name,
+      requestedUser: data.user,
       currentUser: data.clickedUser.username
     });
-    console.log(data);
   });
 });

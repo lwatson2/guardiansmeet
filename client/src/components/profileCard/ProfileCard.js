@@ -4,7 +4,7 @@ import { device } from "../helpers/mediaQueries";
 import ProfilePicPlaceHolder from "../../images/Portrait_placeholder.png";
 import Cookies from "js-cookie";
 
-const ProfileCard = ({ user, handleChat }) => {
+const ProfileCard = ({ user, handleChat, showChatBtn }) => {
   return (
     <>
       <UserProfileContainer>
@@ -23,7 +23,7 @@ const ProfileCard = ({ user, handleChat }) => {
             <UserUsername>@{user.username}</UserUsername>
           </UserNameContainer>
           {user.bio && <UserBio>{user.bio}</UserBio>}
-          {Cookies.get("token") && (
+          {Cookies.get("token") && showChatBtn && (
             <ConnectBtnContainer>
               <ConnectBtn onClick={() => handleChat(user)}>Chat</ConnectBtn>
             </ConnectBtnContainer>
@@ -45,7 +45,6 @@ const UserProfileContainer = styled.div`
   justify-content: center;
   border-radius: 10px;
   box-shadow: 0 15px 30px hsla(0, 0%, 0%, 0.2);
-  margin: 50px 0;
   @media ${device.tablet} {
     width: 392px;
   }

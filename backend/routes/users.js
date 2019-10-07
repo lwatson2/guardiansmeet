@@ -60,7 +60,7 @@ router.get("/userList", async (req, res) => {
 router.post("/register", async (req, res) => {
   const { name, password, age, preference, bio, username } = req.body;
   const { file } = req.files;
-  let profilePicture
+  let profilePicture;
   // Checks if name already exists
   const user = await User.findOne({ username });
   if (user) {
@@ -79,7 +79,7 @@ router.post("/register", async (req, res) => {
         }
       );
     } else {
-      profilePicture = null
+      profilePicture = null;
     }
     const newuser = new User({
       name,
@@ -143,19 +143,35 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
+router.post("/handleMatchedUser", async (req, res) => {
+  const { user, clickedUser } = req.body;
+  await User.findOneAndUpdate(
+    { _id: clickedUser._id, "matched.username": { $ne: user.username } },
+    { $push: { matched: { username: user.username, id: user.id } } },
+    (err, doc) => {
+      if (err) {
+        console.log(err);
+      }
+    }
+  );
+  res.sendStatus(200);
+});
 router.get("/fetchusers", async (req, res) => {
   let offset = req.query.offset;
   let username = req.query.username;
   let users;
   offset = parseInt(offset);
   if (username) {
-    users = await User.find({
-      username: { $ne: username }
-    })
+    users = await User.find(
+      {
+        username: { $ne: username }
+      },
+      { password: 0 }
+    )
       .skip(offset)
       .limit(2);
   } else {
-    users = await User.find()
+    users = await User.find({}, { password: 0 })
       .skip(offset)
       .limit(2);
   }

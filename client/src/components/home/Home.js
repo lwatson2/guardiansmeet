@@ -9,12 +9,13 @@ import { toast } from "react-toastify";
 import io from "socket.io-client";
 const socket = io.connect("http://localhost:5000", { secure: true });
 
-const Msg = ({ user }) => {
-  console.log(user);
+const Msg = ({ user, setShowUser }) => {
   return (
     <ToastMessageContainer>
       <ToastMessage> {user} wants to chat</ToastMessage>
-      <ToastProfileButton>View Profile</ToastProfileButton>
+      <ToastProfileButton onClick={() => setShowUser(true)}>
+        View Profile
+      </ToastProfileButton>
     </ToastMessageContainer>
   );
 };
@@ -26,6 +27,8 @@ const Home = () => {
   const ref = useRef();
   const onScreen = useOnScreen(ref);
   const [user, setUser] = useContext(UserContext);
+  const [showUser, setShowUser] = useState(false);
+  const [requestedUser, setrequestedUser] = useState();
 
   useEffect(() => {
     fetchUsers();
@@ -39,7 +42,6 @@ const Home = () => {
       const offsetUserQuery = offset + 2;
       let newUserList = [];
       let res;
-      console.log("false");
       const fetchData = async () => {
         if (user.username) {
           res = await axios.get(
@@ -76,16 +78,18 @@ const Home = () => {
   const socketFunctions = () => {
     socket.on("recievedChatRequest", data => {
       if (data.currentUser === user.username) {
-        showToast(data.requestedUser);
+        showToast(data.requestedUser.name);
+        setrequestedUser(data.requestedUser);
       }
     });
   };
   const handleChat = clickedUser => {
-    console.log(clickedUser);
     socket.emit("sendChatRequest", { user, clickedUser });
+    console.log("object");
+    axios.post("/users/handleMatchedUser", { user, clickedUser });
   };
   const showToast = username => {
-    toast(<Msg user={username} />, {
+    toast(<Msg user={username} setShowUser={setShowUser} />, {
       position: "top-right",
       autoClose: false,
       hideProgressBar: false,
@@ -94,10 +98,13 @@ const Home = () => {
       draggable: true
     });
   };
+
   return (
     <UserListContainer>
       {userList.map(user => (
-        <ProfileCard handleChat={handleChat} user={user} />
+        <ProfileCardContainer>
+          <ProfileCard handleChat={handleChat} user={user} showChatBtn={true} />
+        </ProfileCardContainer>
       ))}
       <LoadingContainer
         opactiy={userList.length >= userCount && onScreen ? "0" : "1"}
@@ -105,6 +112,27 @@ const Home = () => {
       >
         Loading
       </LoadingContainer>
+      {showUser && (
+        <UserProfileContainer>
+          <UserCardContainer>
+            <ProfileCard user={requestedUser} showChatBtn={false} />
+            <ChatRequestBtnContainer>
+              <UserChatRequestBtn
+                color="hsl(102, 97%, 16%)"
+                background="hsl(101, 100%, 80%)"
+              >
+                Accept
+              </UserChatRequestBtn>
+              <UserChatRequestBtn
+                color="hsl(0, 85%, 27%)"
+                background="hsl(0, 100%, 80%)"
+              >
+                Decline
+              </UserChatRequestBtn>
+            </ChatRequestBtnContainer>
+          </UserCardContainer>
+        </UserProfileContainer>
+      )}
     </UserListContainer>
   );
 };
@@ -141,6 +169,35 @@ const UserListContainer = styled.section`
   @media ${device.tablet} {
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   }
+`;
+const ProfileCardContainer = styled.div`
+  margin: 50px 0;
+`;
+const UserProfileContainer = styled.div`
+  background: hsla(0, 0%, 0%, 0.4);
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const UserCardContainer = styled.div``;
+const ChatRequestBtnContainer = styled.div`
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-evenly;
+`;
+const UserChatRequestBtn = styled.button`
+  border: none;
+  background: ${props => props.background};
+  color: ${props => props.color};
+  height: 30px;
+  width: 100px;
+  border-radius: 6px;
+  cursor: pointer;
 `;
 const LoadingContainer = styled.div`
   opacity: 0;
