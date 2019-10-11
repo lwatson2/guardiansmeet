@@ -1,10 +1,20 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { device } from "../helpers/mediaQueries";
 import ProfilePicPlaceHolder from "../../images/Portrait_placeholder.png";
 import Cookies from "js-cookie";
 
-const ProfileCard = ({ user, handleChat, showChatBtn }) => {
+const ProfileCard = ({ user, handleChat, showChatBtn, loggedInUser }) => {
+  const [showMatchedCheck, setshowMatchedCheck] = useState(false);
+  useEffect(() => {
+    if (loggedInUser && loggedInUser.sentMatches) {
+      loggedInUser.sentMatches.forEach(matches => {
+        if (matches.id === user._id) {
+          setshowMatchedCheck(true);
+        }
+      });
+    }
+  }, []);
   return (
     <>
       <UserProfileContainer>
@@ -25,7 +35,11 @@ const ProfileCard = ({ user, handleChat, showChatBtn }) => {
           {user.bio && <UserBio>{user.bio}</UserBio>}
           {Cookies.get("token") && showChatBtn && (
             <ConnectBtnContainer>
-              <ConnectBtn onClick={() => handleChat(user)}>Chat</ConnectBtn>
+              {showMatchedCheck ? (
+                <ConnectBtn>Waiting</ConnectBtn>
+              ) : (
+                <ConnectBtn onClick={() => handleChat(user)}>Chat</ConnectBtn>
+              )}
             </ConnectBtnContainer>
           )}
         </UserDetails>

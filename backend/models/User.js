@@ -1,10 +1,5 @@
 const mongoose = require("mongoose");
 
-const notificationSchema = new mongoose.Schema({
-  viewed: { type: Boolean, default: false },
-  name: { type: String }
-});
-
 const messageSchema = new mongoose.Schema({
   message: { type: String },
   sender: { type: String },
@@ -17,7 +12,15 @@ const messageGroupSchema = new mongoose.Schema({
 
 const matchedSchema = new mongoose.Schema({
   username: { type: String },
-  id: { type: String }
+  id: { type: String },
+  accepted: { type: Boolean, default: false },
+  viewed: { type: Boolean, default: false }
+});
+
+const sentMatchesSchema = new mongoose.Schema({
+  username: { type: String },
+  id: { type: String },
+  accepted: { type: Boolean, default: false }
 });
 
 const userSchema = new mongoose.Schema({
@@ -28,9 +31,9 @@ const userSchema = new mongoose.Schema({
   preference: { type: String },
   bio: { type: String },
   profilePicture: { type: String },
-  notifications: { type: [notificationSchema], default: undefined },
   messages: { type: [messageGroupSchema], default: undefined },
-  matched: { type: [matchedSchema], default: undefined }
+  matched: { type: [matchedSchema], default: undefined },
+  sentMatches: { type: [sentMatchesSchema], default: undefined }
 });
 
 const User = mongoose.model("User", userSchema);

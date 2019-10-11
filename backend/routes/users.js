@@ -130,7 +130,9 @@ router.post("/login", (req, res, next) => {
               preference: user.preference,
               age: user.age,
               bio: user.bio,
-              id: user._id
+              id: user._id,
+              matched: user.matched,
+              sentMatches: user.sentMatches
             }
           });
         }
@@ -147,7 +149,12 @@ router.post("/handleMatchedUser", async (req, res) => {
   const { user, clickedUser } = req.body;
   await User.findOneAndUpdate(
     { _id: clickedUser._id, "matched.username": { $ne: user.username } },
-    { $push: { matched: { username: user.username, id: user.id } } },
+    {
+      $push: {
+        matched: { username: user.username, id: user.id },
+        viewed: false
+      }
+    },
     (err, doc) => {
       if (err) {
         console.log(err);
@@ -156,15 +163,66 @@ router.post("/handleMatchedUser", async (req, res) => {
   );
   res.sendStatus(200);
 });
+
+router.get("/fetchUserProfile", async (req, res) => {
+  let id = req.query.id;
+  const user = await User.findOne({ _id: id });
+  res.json({
+    user: {
+      name: user.name,
+      username: user.username,
+      profilePicture: user.profilePicture,
+      age: user.age,
+      bio: user.bio
+    }
+  });
+});
+
+router.post("/updateSentMatches", async (req, res) => {
+  const { user, clickedUser } = req.body;
+  await User.findOneAndUpdate(
+    { _id: user.id, "sentMatches.username": { $ne: clickedUser.username } },
+    {
+      $push: {
+        sentMatches: { username: clickedUser.username, id: clickedUser._id }
+      }
+    },
+    (err, doc) => {
+      if (err) {
+        console.log(err);
+      }
+    }
+  );
+  res.sendStatus(200);
+});
+router.post("/setViewedMatched", async (req, res) => {
+  const { user, id } = req.body;
+  const userProfile = await User.findOne({ _id: user.id });
+  userProfile.matched.forEach(match => {
+    if (match.viewed === false && match.id === id) {
+      match.viewed = true;
+    }
+  });
+  await userProfile.save();
+  res.sendStatus(200);
+});
 router.get("/fetchusers", async (req, res) => {
   let offset = req.query.offset;
   let username = req.query.username;
   let users;
+  let matchedIds = [];
   offset = parseInt(offset);
   if (username) {
+    const user = await User.findOne({ username: username });
+    if (user.matched) {
+      user.matched.forEach(match => {
+        matchedIds.push(match.id);
+      });
+    }
     users = await User.find(
       {
-        username: { $ne: username }
+        username: { $ne: username },
+        _id: { $nin: matchedIds }
       },
       { password: 0 }
     )
@@ -191,6 +249,10 @@ router.get("/refreshUser", async (req, res) => {
       id: user._id
     }
   });
+});
+router.post("/acceptMatch", async (req, res) => {
+  const { user } = req.body;
+  const userProfile = await User.findOne({ _id: user.id });
 });
 router.get("/logout", (req, res) => {
   req.logOut();

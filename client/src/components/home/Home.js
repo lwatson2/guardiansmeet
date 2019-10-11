@@ -9,11 +9,14 @@ import { toast } from "react-toastify";
 import io from "socket.io-client";
 const socket = io.connect("http://localhost:5000", { secure: true });
 
-const Msg = ({ user, setShowUser }) => {
+const Msg = ({ user, id, setShowUser, setUserNotificationId }) => {
+  const handleClick = () => {
+    setUserNotificationId(id);
+  };
   return (
     <ToastMessageContainer>
       <ToastMessage> {user} wants to chat</ToastMessage>
-      <ToastProfileButton onClick={() => setShowUser(true)}>
+      <ToastProfileButton onClick={handleClick}>
         View Profile
       </ToastProfileButton>
     </ToastMessageContainer>
@@ -29,13 +32,37 @@ const Home = () => {
   const [user, setUser] = useContext(UserContext);
   const [showUser, setShowUser] = useState(false);
   const [requestedUser, setrequestedUser] = useState();
+  const [userNotificationId, setUserNotificationId] = useState();
 
   useEffect(() => {
     fetchUsers();
     socketFunctions();
   }, []);
   useEffect(() => {
-    if (userList.length > userCount || offset === userCount) {
+    if (user.matched) {
+      user.matched.forEach(match => {
+        if (match.viewed === false) {
+          showToast(match.username, match.id);
+          axios.post("/users/setViewedMatched", { user, id: match.id });
+        }
+      });
+    }
+  }, [user]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await axios.get(
+        `/users/fetchUserProfile?id=${userNotificationId}`
+      );
+      setrequestedUser(res.data.user);
+      setShowUser(true);
+    };
+    if (userNotificationId) {
+      fetchData();
+    }
+  }, [userNotificationId]);
+
+  useEffect(() => {
+    if (userList.length > userCount || offset >= userCount) {
       return;
     }
     if (onScreen && userList.length > 0 && userList.length <= userCount) {
@@ -57,17 +84,23 @@ const Home = () => {
       fetchData();
     }
   }, [onScreen]);
+
   useEffect(() => {
+    if (!user.username) {
+      setOffset(0);
+      setUserList([]);
+      setuserCount(0);
+    }
     fetchUsers();
   }, [user]);
   const fetchUsers = async () => {
     let res;
     if (user.username) {
       res = await axios.get(
-        `/users/fetchusers?offset=${offset}&username=${user.username}`
+        `/users/fetchusers?offset=0&username=${user.username}`
       );
     } else {
-      res = await axios.get(`/users/fetchusers?offset=${offset}`);
+      res = await axios.get(`/users/fetchusers?offset=0`);
     }
     let users = res.data.users;
     setUserList(users);
@@ -78,6 +111,7 @@ const Home = () => {
   const socketFunctions = () => {
     socket.on("recievedChatRequest", data => {
       if (data.currentUser === user.username) {
+        axios.post("/users/setViewedMatched", { user, id: data.id });
         showToast(data.requestedUser.name);
         setrequestedUser(data.requestedUser);
       }
@@ -85,25 +119,38 @@ const Home = () => {
   };
   const handleChat = clickedUser => {
     socket.emit("sendChatRequest", { user, clickedUser });
-    console.log("object");
+    axios.post("/users/updateSentMatches", { user, clickedUser });
     axios.post("/users/handleMatchedUser", { user, clickedUser });
   };
-  const showToast = username => {
-    toast(<Msg user={username} setShowUser={setShowUser} />, {
-      position: "top-right",
-      autoClose: false,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true
-    });
+  const showToast = (username, id) => {
+    toast(
+      <Msg
+        user={username}
+        id={id}
+        setShowUser={setShowUser}
+        setUserNotificationId={setUserNotificationId}
+      />,
+      {
+        position: "top-right",
+        autoClose: false,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true
+      }
+    );
   };
 
   return (
     <UserListContainer>
-      {userList.map(user => (
+      {userList.map(userItem => (
         <ProfileCardContainer>
-          <ProfileCard handleChat={handleChat} user={user} showChatBtn={true} />
+          <ProfileCard
+            handleChat={handleChat}
+            user={userItem}
+            showChatBtn={true}
+            loggedInUser={user}
+          />
         </ProfileCardContainer>
       ))}
       <LoadingContainer
