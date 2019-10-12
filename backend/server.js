@@ -35,6 +35,7 @@ const io = socket(server);
 
 io.on("connection", socket => {
   socket.on("sendChatRequest", data => {
+    console.log("object");
     socket.broadcast.emit("recievedChatRequest", {
       requestedUser: data.user,
       currentUser: data.clickedUser.username

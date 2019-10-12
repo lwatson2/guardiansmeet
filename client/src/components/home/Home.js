@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import io from "socket.io-client";
 const socket = io.connect("http://localhost:5000", { secure: true });
 
-const Msg = ({ user, id, setShowUser, setUserNotificationId }) => {
+const Msg = ({ user, id, setUserNotificationId }) => {
   const handleClick = () => {
     setUserNotificationId(id);
   };
@@ -36,8 +36,17 @@ const Home = () => {
 
   useEffect(() => {
     fetchUsers();
-    socketFunctions();
+    socket.on("recievedChatRequest", data => {
+      console.log(user);
+      if (data.currentUser === user.username) {
+        // axios.post("/users/setViewedMatched", { user, id: data.id });
+        showToast(data.requestedUser.name);
+        setrequestedUser(data.requestedUser);
+      }
+    });
   }, []);
+
+  //Checks for unseen notifications on user login
   useEffect(() => {
     if (user.matched) {
       user.matched.forEach(match => {
@@ -48,8 +57,10 @@ const Home = () => {
       });
     }
   }, [user]);
+
+  //Runs whenever user clicks view profile on notification toast
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUserProfile = async () => {
       const res = await axios.get(
         `/users/fetchUserProfile?id=${userNotificationId}`
       );
@@ -57,19 +68,22 @@ const Home = () => {
       setShowUser(true);
     };
     if (userNotificationId) {
-      fetchData();
+      fetchUserProfile();
     }
   }, [userNotificationId]);
 
+  //Use effect for the infinite loading component
   useEffect(() => {
+    //If userlist array length is greater than the total number of users or the offset is greater than total number of users return
     if (userList.length > userCount || offset >= userCount) {
       return;
     }
+    //Checks to make sure user is at bottom of page and that the userList array is contains items
     if (onScreen && userList.length > 0 && userList.length <= userCount) {
       const offsetUserQuery = offset + 2;
       let newUserList = [];
       let res;
-      const fetchData = async () => {
+      const fetchUserList = async () => {
         if (user.username) {
           res = await axios.get(
             `/users/fetchusers?offset=${offsetUserQuery}&username=${user.username}`
@@ -81,18 +95,22 @@ const Home = () => {
         setOffset(offsetUserQuery);
         setUserList(newUserList);
       };
-      fetchData();
+      fetchUserList();
     }
   }, [onScreen]);
 
+  //Runs whenever user logs in / logs out
   useEffect(() => {
     if (!user.username) {
       setOffset(0);
       setUserList([]);
       setuserCount(0);
+      fetchUsers();
     }
-    fetchUsers();
+    console.log(user);
   }, [user]);
+
+  // Fetches users on page load
   const fetchUsers = async () => {
     let res;
     if (user.username) {
@@ -108,20 +126,18 @@ const Home = () => {
     let userCountNum = response.data.count;
     setuserCount(userCountNum);
   };
-  const socketFunctions = () => {
-    socket.on("recievedChatRequest", data => {
-      if (data.currentUser === user.username) {
-        axios.post("/users/setViewedMatched", { user, id: data.id });
-        showToast(data.requestedUser.name);
-        setrequestedUser(data.requestedUser);
-      }
-    });
-  };
+
+  //Socket functions for socket.io
+
+  //Runs whenever the user clicks chat button
   const handleChat = clickedUser => {
+    console.log(user);
     socket.emit("sendChatRequest", { user, clickedUser });
-    axios.post("/users/updateSentMatches", { user, clickedUser });
-    axios.post("/users/handleMatchedUser", { user, clickedUser });
+    //  axios.post("/users/updateSentMatches", { user, clickedUser });
+    // axios.post("/users/handleMatchedUser", { user, clickedUser });
   };
+
+  //Toast config
   const showToast = (username, id) => {
     toast(
       <Msg
