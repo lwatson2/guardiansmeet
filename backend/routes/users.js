@@ -7,6 +7,8 @@ const User = require("../models/User");
 const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
+const { verifyToken } = require("../config/jwt");
+
 const saltRounds = 10;
 // Use  db.students.find().skip(20).limit(20) for fetching more users
 // Local Strategy for passport
@@ -112,7 +114,7 @@ router.post("/login", (req, res, next) => {
     if (user) {
       // If there's a user sign a jsonwebtoken with their creds and send that back to the client
       jwt.sign(
-        { user },
+        { id: user._id },
         process.env.SECRET,
         { expiresIn: "1d" },
         (err, token) => {
@@ -164,20 +166,39 @@ router.post("/handleMatchedUser", async (req, res) => {
   res.sendStatus(200);
 });
 
-router.get("/fetchUserProfile", async (req, res) => {
-  let id = req.query.id;
-  const user = await User.findOne({ _id: id });
+router.get("/fetchUserProfile", verifyToken, async (req, res) => {
+  const decoded = jwt.verify(req.token, process.env.SECRET);
+  const { id } = decoded;
+  const userProfile = await User.findOne({ _id: id });
+  res.json({
+    userProfile: {
+      name: userProfile.name,
+      username: userProfile.username,
+      profilePicture: userProfile.profilePicture,
+      preference: userProfile.preference,
+      age: userProfile.age,
+      bio: userProfile.bio,
+      id: userProfile._id,
+      matched: userProfile.matched,
+      sentMatches: userProfile.sentMatches
+    }
+  });
+});
+router.get("/fetchMatchedUserDetails", verifyToken, async (req, res) => {
+  let username = req.query.username;
+  console.log(req.query.username);
+  const user = await User.findOne({ username });
   res.json({
     user: {
       name: user.name,
       username: user.username,
       profilePicture: user.profilePicture,
+      preference: user.preference,
       age: user.age,
       bio: user.bio
     }
   });
 });
-
 router.post("/updateSentMatches", async (req, res) => {
   const { user, clickedUser } = req.body;
   await User.findOneAndUpdate(
@@ -246,7 +267,9 @@ router.get("/refreshUser", async (req, res) => {
       preference: user.preference,
       age: user.age,
       bio: user.bio,
-      id: user._id
+      id: user._id,
+      matched: user.matched,
+      sentMatches: user.sentMatches
     }
   });
 });

@@ -4,14 +4,16 @@ import ProfileCard from "../profileCard/ProfileCard";
 import axios from "axios";
 import useOnScreen from "../helpers/useInfiniteScroll";
 import { device } from "../helpers/mediaQueries";
-import { UserContext } from "../context/UserContext";
+import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import io from "socket.io-client";
+import fetchUserData from "../helpers/fetchUserData";
+const token = Cookies.get("token");
 const socket = io.connect("http://localhost:5000", { secure: true });
 
-const Msg = ({ user, id, setUserNotificationId }) => {
+const Msg = ({ user, setUserNotificationId }) => {
   const handleClick = () => {
-    setUserNotificationId(id);
+    setUserNotificationId(user);
   };
   return (
     <ToastMessageContainer>
@@ -29,26 +31,36 @@ const Home = () => {
   const [offset, setOffset] = useState(0);
   const ref = useRef();
   const onScreen = useOnScreen(ref);
-  const [user, setUser] = useContext(UserContext);
+  const token = Cookies.get("token");
+  const [user, setUser] = useState();
   const [showUser, setShowUser] = useState(false);
   const [requestedUser, setrequestedUser] = useState();
   const [userNotificationId, setUserNotificationId] = useState();
+  let config = {
+    headers: { Authorization: "Bearer " + token }
+  };
 
   useEffect(() => {
+    let userProfile;
+    if (token && !user) {
+      const fetchData = async () => {
+        userProfile = await fetchUserData();
+        setUser(userProfile);
+      };
+      fetchData();
+    }
     fetchUsers();
     socket.on("recievedChatRequest", data => {
-      console.log(user);
-      if (data.currentUser === user.username) {
-        // axios.post("/users/setViewedMatched", { user, id: data.id });
-        showToast(data.requestedUser.name);
-        setrequestedUser(data.requestedUser);
-      }
+      checkIfMatchedUser(data, userProfile);
     });
+    return () => {
+      socket.close();
+    };
   }, []);
 
   //Checks for unseen notifications on user login
   useEffect(() => {
-    if (user.matched) {
+    if (user && user.matched) {
       user.matched.forEach(match => {
         if (match.viewed === false) {
           showToast(match.username, match.id);
@@ -62,7 +74,8 @@ const Home = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       const res = await axios.get(
-        `/users/fetchUserProfile?id=${userNotificationId}`
+        `/users/fetchMatchedUserDetails?username=${userNotificationId}`,
+        config
       );
       setrequestedUser(res.data.user);
       setShowUser(true);
@@ -84,7 +97,7 @@ const Home = () => {
       let newUserList = [];
       let res;
       const fetchUserList = async () => {
-        if (user.username) {
+        if (user) {
           res = await axios.get(
             `/users/fetchusers?offset=${offsetUserQuery}&username=${user.username}`
           );
@@ -101,19 +114,16 @@ const Home = () => {
 
   //Runs whenever user logs in / logs out
   useEffect(() => {
-    if (!user.username) {
-      setOffset(0);
-      setUserList([]);
-      setuserCount(0);
-      fetchUsers();
-    }
-    console.log(user);
+    setOffset(0);
+    setUserList([]);
+    setuserCount(0);
+    fetchUsers();
   }, [user]);
 
   // Fetches users on page load
   const fetchUsers = async () => {
     let res;
-    if (user.username) {
+    if (user) {
       res = await axios.get(
         `/users/fetchusers?offset=0&username=${user.username}`
       );
@@ -127,22 +137,25 @@ const Home = () => {
     setuserCount(userCountNum);
   };
 
-  //Socket functions for socket.io
+  const checkIfMatchedUser = (data, userProfile) => {
+    if (userProfile && data.currentUser === userProfile.username) {
+      axios.post("/users/setViewedMatched", { user, id: data.id });
+      showToast(data.requestedUser.name, data.requestedUser.id);
+    }
+  };
 
   //Runs whenever the user clicks chat button
   const handleChat = clickedUser => {
-    console.log(user);
     socket.emit("sendChatRequest", { user, clickedUser });
-    //  axios.post("/users/updateSentMatches", { user, clickedUser });
-    // axios.post("/users/handleMatchedUser", { user, clickedUser });
+    axios.post("/users/updateSentMatches", { user, clickedUser });
+    axios.post("/users/handleMatchedUser", { user, clickedUser });
   };
 
   //Toast config
-  const showToast = (username, id) => {
+  const showToast = username => {
     toast(
       <Msg
         user={username}
-        id={id}
         setShowUser={setShowUser}
         setUserNotificationId={setUserNotificationId}
       />,
@@ -156,7 +169,7 @@ const Home = () => {
       }
     );
   };
-
+  const socketFunction = userProfile => {};
   return (
     <UserListContainer>
       {userList.map(userItem => (

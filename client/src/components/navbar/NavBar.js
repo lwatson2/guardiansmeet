@@ -21,10 +21,9 @@ const NavBar = () => {
   };
   useEffect(() => {
     if (!user.username && token) {
-      const { user } = JSON.parse(atob(token.split(".")[1]));
-      const { _id } = user;
+      const { id } = JSON.parse(atob(token.split(".")[1]));
       const fetchUser = async () => {
-        const { data } = await axios.get(`/users/refreshUser?id=${_id}`);
+        const { data } = await axios.get(`/users/refreshUser?id=${id}`);
         setUser(data.user);
       };
       fetchUser();
