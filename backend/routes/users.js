@@ -72,10 +72,14 @@ router.post("/register", async (req, res) => {
     });
   } else {
     //If name doesn't exist create a new one
-    if (req.body.profilePicture) {
+    if (file) {
       await cloudinary.uploader.upload(
         file.path,
-        { transformation: [{ width: 400, height: 400, radius: "max" }] },
+        {
+          transformation: [
+            { width: 400, height: 400, radius: "max", crop: "crop" }
+          ]
+        },
         (err, image) => {
           profilePicture = image.url;
         }

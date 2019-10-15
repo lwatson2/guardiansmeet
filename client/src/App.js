@@ -6,6 +6,7 @@ import CreateProfile from "./components/createProfile/CreateProfile";
 import Login from "./components/login/Login";
 import Home from "./components/home/Home";
 import NavBar from "./components/navbar/NavBar";
+import MessagesPage from "./components/messagesPage/MessagesPage";
 import Cookies from "js-cookie";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -16,6 +17,15 @@ const LoggedInRoute = ({ component: Component, ...rest }) => (
     {...rest}
     render={props =>
       !Cookies.get("token") ? <Component {...props} /> : <Redirect to="/" />
+    }
+  />
+);
+
+const ProtectedRoute = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={props =>
+      Cookies.get("token") ? <Component {...props} /> : <Redirect to="/" />
     }
   />
 );
@@ -34,6 +44,11 @@ const App = () => {
               exact
               path="/new-profile"
               component={CreateProfile}
+            />
+            <ProtectedRoute
+              exact
+              path="/messages/:username"
+              component={MessagesPage}
             />
           </Switch>{" "}
           <ToastContainer

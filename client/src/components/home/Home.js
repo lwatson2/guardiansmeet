@@ -8,9 +8,7 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import io from "socket.io-client";
 import { UserContext } from "../context/UserContext";
-import fetchUserData from "../helpers/fetchUserData";
 const token = Cookies.get("token");
-const socket = io.connect("http://localhost:5000", { secure: true });
 
 const Msg = ({ user, setUserNotificationId }) => {
   const handleClick = () => {
@@ -40,15 +38,17 @@ const Home = props => {
   let config = {
     headers: { Authorization: "Bearer " + token }
   };
+  const socket = io.connect("http://localhost:5000", { secure: true });
 
   useEffect(() => {
     fetchUsers();
+    socket.on("connect", () => console.log("connected"));
     socket.on("recievedChatRequest", data => {
-      checkIfMatchedUser(data);
+      if (user.username && data.currentUser === user.username) {
+        //axios.post("/users/setViewedMatched", { user, id: data.id }, config);
+        showToast(data.requestedUser.name, data.requestedUser.id);
+      }
     });
-    return () => {
-      socket.close();
-    };
   }, []);
 
   //Checks for unseen notifications on user login
@@ -116,7 +116,6 @@ const Home = props => {
   // Fetches users on page load
   const fetchUsers = async () => {
     let res;
-    console.log(user);
     if (user.username) {
       res = await axios.get(
         `/users/fetchusers?offset=0&username=${user.username}`
@@ -131,18 +130,18 @@ const Home = props => {
     setuserCount(userCountNum);
   };
 
-  const checkIfMatchedUser = data => {
-    if (user.username && data.currentUser === user.username) {
-      axios.post("/users/setViewedMatched", { user, id: data.id }, config);
-      showToast(data.requestedUser.name, data.requestedUser.id);
-    }
-  };
+  // const checkIfMatchedUser = data => {
+  //   if (user.username && data.currentUser === user.username) {
+  //     axios.post("/users/setViewedMatched", { user, id: data.id }, config);
+  //     showToast(data.requestedUser.name, data.requestedUser.id);
+  //   }
+  // };
 
   //Runs whenever the user clicks chat button
   const handleChat = clickedUser => {
     socket.emit("sendChatRequest", { user, clickedUser });
-    axios.post("/users/updateSentMatches", { user, clickedUser }, config);
-    axios.post("/users/handleMatchedUser", { user, clickedUser }, config);
+    //  axios.post("/users/updateSentMatches", { user, clickedUser }, config);
+    //  axios.post("/users/handleMatchedUser", { user, clickedUser }, config);
   };
   const handleAccepted = async () => {
     const res = await axios.post(
