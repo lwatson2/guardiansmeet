@@ -147,7 +147,7 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
-router.post("/handleMatchedUser", async (req, res) => {
+router.post("/handleMatchedUser", verifyToken, async (req, res) => {
   const { user, clickedUser } = req.body;
   await User.findOneAndUpdate(
     { _id: clickedUser._id, "matched.username": { $ne: user.username } },
@@ -186,7 +186,6 @@ router.get("/fetchUserProfile", verifyToken, async (req, res) => {
 });
 router.get("/fetchMatchedUserDetails", verifyToken, async (req, res) => {
   let username = req.query.username;
-  console.log(req.query.username);
   const user = await User.findOne({ username });
   res.json({
     user: {
@@ -199,8 +198,9 @@ router.get("/fetchMatchedUserDetails", verifyToken, async (req, res) => {
     }
   });
 });
-router.post("/updateSentMatches", async (req, res) => {
+router.post("/updateSentMatches", verifyToken, async (req, res) => {
   const { user, clickedUser } = req.body;
+  console.log(req.body);
   await User.findOneAndUpdate(
     { _id: user.id, "sentMatches.username": { $ne: clickedUser.username } },
     {
@@ -212,11 +212,12 @@ router.post("/updateSentMatches", async (req, res) => {
       if (err) {
         console.log(err);
       }
+      console.log(doc);
     }
   );
   res.sendStatus(200);
 });
-router.post("/setViewedMatched", async (req, res) => {
+router.post("/setViewedMatched", verifyToken, async (req, res) => {
   const { user, id } = req.body;
   const userProfile = await User.findOne({ _id: user.id });
   userProfile.matched.forEach(match => {
@@ -273,9 +274,17 @@ router.get("/refreshUser", async (req, res) => {
     }
   });
 });
-router.post("/acceptMatch", async (req, res) => {
-  const { user } = req.body;
+router.post("/acceptMatchRequest", verifyToken, async (req, res) => {
+  const { user, requestedUser } = req.body;
   const userProfile = await User.findOne({ _id: user.id });
+
+  userProfile.matched.forEach(match => {
+    if (match.username === requestedUser.username) {
+      match.accepted = true;
+    }
+  });
+  await userProfile.save();
+  res.sendStatus(200);
 });
 router.get("/logout", (req, res) => {
   req.logOut();

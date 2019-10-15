@@ -7,6 +7,7 @@ import { device } from "../helpers/mediaQueries";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import io from "socket.io-client";
+import { UserContext } from "../context/UserContext";
 import fetchUserData from "../helpers/fetchUserData";
 const token = Cookies.get("token");
 const socket = io.connect("http://localhost:5000", { secure: true });
@@ -25,14 +26,14 @@ const Msg = ({ user, setUserNotificationId }) => {
   );
 };
 
-const Home = () => {
+const Home = props => {
   const [userList, setUserList] = useState([]);
   const [userCount, setuserCount] = useState(0);
   const [offset, setOffset] = useState(0);
   const ref = useRef();
   const onScreen = useOnScreen(ref);
   const token = Cookies.get("token");
-  const [user, setUser] = useState();
+  const [user, setUser] = useContext(UserContext);
   const [showUser, setShowUser] = useState(false);
   const [requestedUser, setrequestedUser] = useState();
   const [userNotificationId, setUserNotificationId] = useState();
@@ -41,17 +42,9 @@ const Home = () => {
   };
 
   useEffect(() => {
-    let userProfile;
-    if (token && !user) {
-      const fetchData = async () => {
-        userProfile = await fetchUserData();
-        setUser(userProfile);
-      };
-      fetchData();
-    }
     fetchUsers();
     socket.on("recievedChatRequest", data => {
-      checkIfMatchedUser(data, userProfile);
+      checkIfMatchedUser(data);
     });
     return () => {
       socket.close();
@@ -60,11 +53,11 @@ const Home = () => {
 
   //Checks for unseen notifications on user login
   useEffect(() => {
-    if (user && user.matched) {
+    if (user.matched) {
       user.matched.forEach(match => {
         if (match.viewed === false) {
           showToast(match.username, match.id);
-          axios.post("/users/setViewedMatched", { user, id: match.id });
+          axios.post("/users/setViewedMatched", { user, id: match.id }, config);
         }
       });
     }
@@ -97,7 +90,7 @@ const Home = () => {
       let newUserList = [];
       let res;
       const fetchUserList = async () => {
-        if (user) {
+        if (user.username) {
           res = await axios.get(
             `/users/fetchusers?offset=${offsetUserQuery}&username=${user.username}`
           );
@@ -123,7 +116,8 @@ const Home = () => {
   // Fetches users on page load
   const fetchUsers = async () => {
     let res;
-    if (user) {
+    console.log(user);
+    if (user.username) {
       res = await axios.get(
         `/users/fetchusers?offset=0&username=${user.username}`
       );
@@ -137,9 +131,9 @@ const Home = () => {
     setuserCount(userCountNum);
   };
 
-  const checkIfMatchedUser = (data, userProfile) => {
-    if (userProfile && data.currentUser === userProfile.username) {
-      axios.post("/users/setViewedMatched", { user, id: data.id });
+  const checkIfMatchedUser = data => {
+    if (user.username && data.currentUser === user.username) {
+      axios.post("/users/setViewedMatched", { user, id: data.id }, config);
       showToast(data.requestedUser.name, data.requestedUser.id);
     }
   };
@@ -147,10 +141,23 @@ const Home = () => {
   //Runs whenever the user clicks chat button
   const handleChat = clickedUser => {
     socket.emit("sendChatRequest", { user, clickedUser });
-    axios.post("/users/updateSentMatches", { user, clickedUser });
-    axios.post("/users/handleMatchedUser", { user, clickedUser });
+    axios.post("/users/updateSentMatches", { user, clickedUser }, config);
+    axios.post("/users/handleMatchedUser", { user, clickedUser }, config);
   };
-
+  const handleAccepted = async () => {
+    const res = await axios.post(
+      "/users/acceptMatchRequest",
+      {
+        user,
+        requestedUser
+      },
+      config
+    );
+    if (res.status === 200) {
+      props.history.push("/home");
+    }
+  };
+  const handleDeclined = async () => {};
   //Toast config
   const showToast = username => {
     toast(
@@ -169,7 +176,6 @@ const Home = () => {
       }
     );
   };
-  const socketFunction = userProfile => {};
   return (
     <UserListContainer>
       {userList.map(userItem => (
@@ -196,12 +202,14 @@ const Home = () => {
               <UserChatRequestBtn
                 color="hsl(102, 97%, 16%)"
                 background="hsl(101, 100%, 80%)"
+                onClick={handleAccepted}
               >
                 Accept
               </UserChatRequestBtn>
               <UserChatRequestBtn
                 color="hsl(0, 85%, 27%)"
                 background="hsl(0, 100%, 80%)"
+                onClick={handleDeclined}
               >
                 Decline
               </UserChatRequestBtn>

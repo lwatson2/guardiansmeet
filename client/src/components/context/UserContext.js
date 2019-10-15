@@ -4,7 +4,6 @@ export const UserContext = createContext([{}, () => {}]);
 
 export const UserProvider = props => {
   const [user, setUser] = useState({});
-  useEffect(() => {}, [user]);
   return (
     <UserContext.Provider value={[user, setUser]}>
       {props.children}

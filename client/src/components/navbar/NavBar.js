@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
+import fetchUserData from "../helpers/fetchUserData";
 
 const NavBar = () => {
   const [showNav, setShowNav] = useState(false);
@@ -20,13 +21,12 @@ const NavBar = () => {
     setShowNav(false);
   };
   useEffect(() => {
-    if (!user.username && token) {
-      const { id } = JSON.parse(atob(token.split(".")[1]));
-      const fetchUser = async () => {
-        const { data } = await axios.get(`/users/refreshUser?id=${id}`);
-        setUser(data.user);
+    if (token && !user.username) {
+      const fetchData = async () => {
+        let userProfile = await fetchUserData();
+        setUser(userProfile);
       };
-      fetchUser();
+      fetchData();
     }
   }, []);
   useEffect(() => {
