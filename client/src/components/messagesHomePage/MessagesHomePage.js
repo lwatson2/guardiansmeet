@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { UserContext } from "../context/UserContext";
 import ProfilePicPlaceHolder from "../../images/Portrait_placeholder.png";
 
-const MessagesPage = () => {
+const MessagesHomePage = () => {
   const [user] = useContext(UserContext);
   //Wrap Message Group Item in link component
   return (
@@ -77,4 +77,4 @@ const UserName = styled.h4`
   color: hsl(209, 20%, 25%);
   padding-left: 15px;
 `;
-export default MessagesPage;
+export default MessagesHomePage;

@@ -6,7 +6,8 @@ import CreateProfile from "./components/createProfile/CreateProfile";
 import Login from "./components/login/Login";
 import Home from "./components/home/Home";
 import NavBar from "./components/navbar/NavBar";
-import MessagesPage from "./components/messagesPage/MessagesPage";
+import MessagesHomePage from "./components/messagesHomePage/MessagesHomePage";
+import MessagesPage from "./components/messagesHomePage/MessagesPage";
 import Cookies from "js-cookie";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -44,6 +45,11 @@ const App = () => {
               exact
               path="/new-profile"
               component={CreateProfile}
+            />
+            <ProtectedRoute
+              exact
+              path="/messages"
+              component={MessagesHomePage}
             />
             <ProtectedRoute
               exact
