@@ -6,7 +6,7 @@ const messageSchema = new mongoose.Schema({
   timestamp: { type: String }
 });
 const messageGroupSchema = new mongoose.Schema({
-  name: { type: String },
+  username: { type: String },
   messages: { type: messageSchema }
 });
 

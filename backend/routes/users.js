@@ -190,7 +190,7 @@ router.get("/fetchUserProfile", verifyToken, async (req, res) => {
 });
 router.get("/fetchMatchedUserDetails", verifyToken, async (req, res) => {
   let username = req.query.username;
-  const user = await User.findOne({ username });
+  const user = await User.findOne({ _id: username });
   res.json({
     user: {
       name: user.name,
@@ -204,7 +204,6 @@ router.get("/fetchMatchedUserDetails", verifyToken, async (req, res) => {
 });
 router.post("/updateSentMatches", verifyToken, async (req, res) => {
   const { user, clickedUser } = req.body;
-  console.log(req.body);
   await User.findOneAndUpdate(
     { _id: user.id, "sentMatches.username": { $ne: clickedUser.username } },
     {
@@ -278,6 +277,38 @@ router.get("/refreshUser", async (req, res) => {
     }
   });
 });
+
+router.post("/createMessageGroup", verifyToken, async (req, res) => {
+  const { user, requestedUser } = req.body;
+  const userProfile = await User.findOne({ username: user.username });
+  if (userProfile.messages) {
+    const messageGroup = userProfile.messages.find(message => {
+      return message.username === requestedUser.username;
+    });
+    if (!messageGroup) {
+      userProfile.messages.push({ username: requestedUser.username });
+    }
+  } else {
+    userProfile.messages = { username: requestedUser.username };
+  }
+  await userProfile.save();
+  const requestUserProfile = await User.findOne({
+    username: requestedUser.username
+  });
+  if (requestUserProfile.messages) {
+    const messageGroup = requestUserProfile.messages.find(message => {
+      return message.username === user.username;
+    });
+    if (!messageGroup) {
+      requestUserProfile.messages.push({ username: user.username });
+    }
+  } else {
+    requestUserProfile.messages = { username: user.username };
+  }
+  await requestUserProfile.save();
+  res.sendStatus(200);
+});
+
 router.post("/acceptMatchRequest", verifyToken, async (req, res) => {
   const { user, requestedUser } = req.body;
   const userProfile = await User.findOne({ _id: user.id });

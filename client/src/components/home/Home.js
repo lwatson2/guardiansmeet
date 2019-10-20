@@ -10,9 +10,9 @@ import io from "socket.io-client";
 import { UserContext } from "../context/UserContext";
 const token = Cookies.get("token");
 
-const Msg = ({ user, setUserNotificationId }) => {
+const Msg = ({ user, id, setUserNotificationId }) => {
   const handleClick = () => {
-    setUserNotificationId(user);
+    setUserNotificationId(id);
   };
   return (
     <ToastMessageContainer>
@@ -35,6 +35,7 @@ const Home = props => {
   const [showUser, setShowUser] = useState(false);
   const [requestedUser, setrequestedUser] = useState();
   const [userNotificationId, setUserNotificationId] = useState();
+
   let config = {
     headers: { Authorization: "Bearer " + token }
   };
@@ -66,6 +67,7 @@ const Home = props => {
   //Runs whenever user clicks view profile on notification toast
   useEffect(() => {
     const fetchUserProfile = async () => {
+      console.log("object");
       const res = await axios.get(
         `/users/fetchMatchedUserDetails?username=${userNotificationId}`,
         config
@@ -130,37 +132,36 @@ const Home = props => {
     setuserCount(userCountNum);
   };
 
-  // const checkIfMatchedUser = data => {
-  //   if (user.username && data.currentUser === user.username) {
-  //     axios.post("/users/setViewedMatched", { user, id: data.id }, config);
-  //     showToast(data.requestedUser.name, data.requestedUser.id);
-  //   }
-  // };
-
   //Runs whenever the user clicks chat button
   const handleChat = clickedUser => {
     socket.emit("sendChatRequest", { user, clickedUser });
-    //  axios.post("/users/updateSentMatches", { user, clickedUser }, config);
-    //  axios.post("/users/handleMatchedUser", { user, clickedUser }, config);
+    // axios.post("/users/updateSentMatches", { user, clickedUser }, config);
+    // axios.post("/users/handleMatchedUser", { user, clickedUser }, config);
   };
   const handleAccepted = async () => {
-    const res = await axios.post(
-      "/users/acceptMatchRequest",
-      {
-        user,
-        requestedUser
-      },
+    await axios.post(
+      "/users/createMessageGroup",
+      { user, requestedUser },
       config
     );
-    if (res.status === 200) {
-      props.history.push("/home");
-    }
+    // const res = await axios.post(
+    //   "/users/acceptMatchRequest",
+    //   {
+    //     user,
+    //     requestedUser
+    //   },
+    //   config
+    // );
+    // if (res.status === 200) {
+    //   props.history.push("/messages");
+    // }
   };
   const handleDeclined = async () => {};
   //Toast config
-  const showToast = username => {
+  const showToast = (username, id) => {
     toast(
       <Msg
+        id={id}
         user={username}
         setShowUser={setShowUser}
         setUserNotificationId={setUserNotificationId}

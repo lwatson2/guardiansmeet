@@ -1,10 +1,29 @@
 import React, { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+import axios from "axios";
+import Cookies from "js-cookie";
 import ProfilePicPlaceHolder from "../../images/Portrait_placeholder.png";
 
 const MessagesHomePage = () => {
+  const token = Cookies.get("token");
   const [user] = useContext(UserContext);
+  const [userMessages, setUserMessages] = useState();
+  let config = {
+    headers: { Authorization: "Bearer " + token }
+  };
+
+  useEffect(() => {
+    const fetchUserMessages = async () => {
+      const res = await axios.get("/users/getUserMessages", config);
+      console.log(res);
+    };
+    fetchUserMessages();
+    return () => {
+      setUserMessages();
+    };
+  }, []);
   //Wrap Message Group Item in link component
   return (
     <MessagePageContainer>
