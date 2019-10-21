@@ -10,57 +10,48 @@ const MessagesHomePage = () => {
   const token = Cookies.get("token");
   const [user] = useContext(UserContext);
   const [userMessages, setUserMessages] = useState();
+  const [loading, setLoading] = useState(true);
   let config = {
     headers: { Authorization: "Bearer " + token }
   };
 
   useEffect(() => {
     const fetchUserMessages = async () => {
-      const res = await axios.get("/users/getUserMessages", config);
-      console.log(res);
+      if (user) {
+        setLoading(true);
+        console.log(user);
+        const res = await axios.get(
+          `/users/getUserMessages?id=${user.id}`,
+          config
+        );
+        setUserMessages(res.data.messages);
+        setLoading(false);
+      }
     };
     fetchUserMessages();
-    return () => {
-      setUserMessages();
-    };
-  }, []);
+  }, [user]);
   //Wrap Message Group Item in link component
-  return (
-    <MessagePageContainer>
-      <MessageGroupItem>
-        <UserProfilePicture
-          src={
-            user.profilePicture ? user.profilePicture : ProfilePicPlaceHolder
-          }
-        />
-        <UserName>{user.name}</UserName>
-      </MessageGroupItem>
-      <MessageGroupItem>
-        <UserProfilePicture
-          src={
-            user.profilePicture ? user.profilePicture : ProfilePicPlaceHolder
-          }
-        />
-        <UserName>{user.name}</UserName>
-      </MessageGroupItem>
-      <MessageGroupItem>
-        <UserProfilePicture
-          src={
-            user.profilePicture ? user.profilePicture : ProfilePicPlaceHolder
-          }
-        />
-        <UserName>{user.name}</UserName>
-      </MessageGroupItem>
-      <MessageGroupItem>
-        <UserProfilePicture
-          src={
-            user.profilePicture ? user.profilePicture : ProfilePicPlaceHolder
-          }
-        />
-        <UserName>{user.name}</UserName>
-      </MessageGroupItem>
-    </MessagePageContainer>
-  );
+  if (loading) {
+    return <div>Loading....</div>;
+  }
+  if (!loading && userMessages.length > 0) {
+    return (
+      <MessagePageContainer>
+        {userMessages.map(message => (
+          <MessageGroupItem>
+            <UserProfilePicture
+              src={
+                message.profilePicture
+                  ? message.profilePicture
+                  : ProfilePicPlaceHolder
+              }
+            />
+            <UserName>{message.name}</UserName>
+          </MessageGroupItem>
+        ))}
+      </MessagePageContainer>
+    );
+  }
 };
 
 const MessagePageContainer = styled.section`

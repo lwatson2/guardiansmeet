@@ -31,10 +31,11 @@ const Home = props => {
   const ref = useRef();
   const onScreen = useOnScreen(ref);
   const token = Cookies.get("token");
-  const [user, setUser] = useContext(UserContext);
+  const [user] = useContext(UserContext);
   const [showUser, setShowUser] = useState(false);
-  const [requestedUser, setrequestedUser] = useState();
+  const [requestedUser, setrequestedUser] = useState({});
   const [userNotificationId, setUserNotificationId] = useState();
+  const [currentUserUsername, setCurrentUserUsername] = useState();
 
   let config = {
     headers: { Authorization: "Bearer " + token }
@@ -44,12 +45,6 @@ const Home = props => {
   useEffect(() => {
     fetchUsers();
     socket.on("connect", () => console.log("connected"));
-    socket.on("recievedChatRequest", data => {
-      if (user.username && data.currentUser === user.username) {
-        //axios.post("/users/setViewedMatched", { user, id: data.id }, config);
-        showToast(data.requestedUser.name, data.requestedUser.id);
-      }
-    });
   }, []);
 
   //Checks for unseen notifications on user login
@@ -62,21 +57,30 @@ const Home = props => {
         }
       });
     }
+
+    socket.on("recievedChatRequest", data => {
+      setrequestedUser(data.requestedUser);
+      setCurrentUserUsername(data.currentUser);
+    });
+
+    setOffset(0);
+    setUserList([]);
+    setuserCount(0);
+    fetchUsers();
   }, [user]);
 
   //Runs whenever user clicks view profile on notification toast
   useEffect(() => {
     const fetchUserProfile = async () => {
-      console.log("object");
       const res = await axios.get(
         `/users/fetchMatchedUserDetails?username=${userNotificationId}`,
         config
       );
       setrequestedUser(res.data.user);
-      setShowUser(true);
     };
     if (userNotificationId) {
       fetchUserProfile();
+      setShowUser(true);
     }
   }, [userNotificationId]);
 
@@ -107,13 +111,16 @@ const Home = props => {
     }
   }, [onScreen]);
 
-  //Runs whenever user logs in / logs out
   useEffect(() => {
-    setOffset(0);
-    setUserList([]);
-    setuserCount(0);
-    fetchUsers();
-  }, [user]);
+    if (user.username && currentUserUsername === user.username) {
+      axios.post(
+        "/users/setViewedMatched",
+        { user, id: requestedUser.id },
+        config
+      );
+      showToast(requestedUser.name, requestedUser.id);
+    }
+  }, [currentUserUsername]);
 
   // Fetches users on page load
   const fetchUsers = async () => {
@@ -135,8 +142,8 @@ const Home = props => {
   //Runs whenever the user clicks chat button
   const handleChat = clickedUser => {
     socket.emit("sendChatRequest", { user, clickedUser });
-    // axios.post("/users/updateSentMatches", { user, clickedUser }, config);
-    // axios.post("/users/handleMatchedUser", { user, clickedUser }, config);
+    axios.post("/users/updateSentMatches", { user, clickedUser }, config);
+    axios.post("/users/handleMatchedUser", { user, clickedUser }, config);
   };
   const handleAccepted = async () => {
     await axios.post(
@@ -144,17 +151,17 @@ const Home = props => {
       { user, requestedUser },
       config
     );
-    // const res = await axios.post(
-    //   "/users/acceptMatchRequest",
-    //   {
-    //     user,
-    //     requestedUser
-    //   },
-    //   config
-    // );
-    // if (res.status === 200) {
-    //   props.history.push("/messages");
-    // }
+    const res = await axios.post(
+      "/users/acceptMatchRequest",
+      {
+        user,
+        requestedUser
+      },
+      config
+    );
+    if (res.status === 200) {
+      props.history.push("/messages");
+    }
   };
   const handleDeclined = async () => {};
   //Toast config

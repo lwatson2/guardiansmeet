@@ -7,6 +7,8 @@ const messageSchema = new mongoose.Schema({
 });
 const messageGroupSchema = new mongoose.Schema({
   username: { type: String },
+  name: { type: String },
+  profilePicture: { type: String },
   messages: { type: messageSchema }
 });
 

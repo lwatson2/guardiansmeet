@@ -280,16 +280,25 @@ router.get("/refreshUser", async (req, res) => {
 
 router.post("/createMessageGroup", verifyToken, async (req, res) => {
   const { user, requestedUser } = req.body;
+  console.log(user, requestedUser);
   const userProfile = await User.findOne({ username: user.username });
   if (userProfile.messages) {
     const messageGroup = userProfile.messages.find(message => {
       return message.username === requestedUser.username;
     });
     if (!messageGroup) {
-      userProfile.messages.push({ username: requestedUser.username });
+      userProfile.messages.push({
+        username: requestedUser.username,
+        profilePicture: requestedUser.profilePicture,
+        name: requestedUser.name
+      });
     }
   } else {
-    userProfile.messages = { username: requestedUser.username };
+    userProfile.messages = {
+      username: requestedUser.username,
+      profilePicture: requestedUser.profilePicture,
+      name: requestedUser.name
+    };
   }
   await userProfile.save();
   const requestUserProfile = await User.findOne({
@@ -300,10 +309,18 @@ router.post("/createMessageGroup", verifyToken, async (req, res) => {
       return message.username === user.username;
     });
     if (!messageGroup) {
-      requestUserProfile.messages.push({ username: user.username });
+      requestUserProfile.messages.push({
+        username: user.username,
+        profilePicture: user.profilePicture,
+        name: user.name
+      });
     }
   } else {
-    requestUserProfile.messages = { username: user.username };
+    requestUserProfile.messages = {
+      username: user.username,
+      profilePicture: user.profilePicture,
+      name: user.name
+    };
   }
   await requestUserProfile.save();
   res.sendStatus(200);
@@ -315,11 +332,24 @@ router.post("/acceptMatchRequest", verifyToken, async (req, res) => {
 
   userProfile.matched.forEach(match => {
     if (match.username === requestedUser.username) {
-      match.accepted = true;
+      match.accepted === true;
     }
   });
   await userProfile.save();
   res.sendStatus(200);
+});
+router.get("/getUserMessages", async (req, res) => {
+  const { id } = req.query;
+  if (id === "undefined") {
+    return;
+  }
+  const user = await User.findOne({ _id: id });
+  console.log(user.messages);
+  if (user.messages) {
+    res.json({ messages: user.messages });
+  } else {
+    res.json({ messages: {} });
+  }
 });
 router.get("/logout", (req, res) => {
   req.logOut();
