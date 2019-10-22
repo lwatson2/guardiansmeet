@@ -280,7 +280,6 @@ router.get("/refreshUser", async (req, res) => {
 
 router.post("/createMessageGroup", verifyToken, async (req, res) => {
   const { user, requestedUser } = req.body;
-  console.log(user, requestedUser);
   const userProfile = await User.findOne({ username: user.username });
   if (userProfile.messages) {
     const messageGroup = userProfile.messages.find(message => {
@@ -344,11 +343,10 @@ router.get("/getUserMessages", async (req, res) => {
     return;
   }
   const user = await User.findOne({ _id: id });
-  console.log(user.messages);
   if (user.messages) {
     res.json({ messages: user.messages });
   } else {
-    res.json({ messages: {} });
+    res.json({ messages: [] });
   }
 });
 router.get("/logout", (req, res) => {

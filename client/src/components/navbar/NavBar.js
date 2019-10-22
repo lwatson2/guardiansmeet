@@ -6,8 +6,9 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../context/UserContext";
 import fetchUserData from "../helpers/fetchUserData";
+import { withRouter } from "react-router";
 
-const NavBar = () => {
+const NavBar = props => {
   const [showNav, setShowNav] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const token = Cookies.get("token");
@@ -19,6 +20,7 @@ const NavBar = () => {
     Cookies.remove("token");
     await axios.get("/users/logout");
     setShowNav(false);
+    props.history.push("/");
   };
   useEffect(() => {
     if (token && !user.username) {
@@ -56,7 +58,11 @@ const NavBar = () => {
           <Link to="/">
             <NavListItem onClick={() => setShowNav(false)}>Home</NavListItem>
           </Link>
-          <NavListItem onClick={() => setShowNav(false)}>Messages</NavListItem>
+          <Link to="/messages">
+            <NavListItem onClick={() => setShowNav(false)}>
+              Messages
+            </NavListItem>
+          </Link>
           <NavListItem onClick={() => setShowNav(false)}>Profile</NavListItem>
           <NavListItem onClick={() => logout()}>Logout</NavListItem>
         </NavItems>
@@ -82,7 +88,7 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default withRouter(NavBar);
 const Navbar = styled.nav`
   background: hsl(211, 18%, 30%);
   height: 45px;

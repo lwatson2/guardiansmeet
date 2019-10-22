@@ -5,6 +5,7 @@ import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import Cookies from "js-cookie";
 import ProfilePicPlaceHolder from "../../images/Portrait_placeholder.png";
+import UndrawImage from "../../images/undraw_everywhere_together_bdmn.svg";
 
 const MessagesHomePage = () => {
   const token = Cookies.get("token");
@@ -19,18 +20,17 @@ const MessagesHomePage = () => {
     const fetchUserMessages = async () => {
       if (user) {
         setLoading(true);
-        console.log(user);
         const res = await axios.get(
           `/users/getUserMessages?id=${user.id}`,
           config
         );
+        console.log(res.data.messages);
         setUserMessages(res.data.messages);
         setLoading(false);
       }
     };
     fetchUserMessages();
   }, [user]);
-  //Wrap Message Group Item in link component
   if (loading) {
     return <div>Loading....</div>;
   }
@@ -38,18 +38,36 @@ const MessagesHomePage = () => {
     return (
       <MessagePageContainer>
         {userMessages.map(message => (
-          <MessageGroupItem>
-            <UserProfilePicture
-              src={
-                message.profilePicture
-                  ? message.profilePicture
-                  : ProfilePicPlaceHolder
-              }
-            />
-            <UserName>{message.name}</UserName>
-          </MessageGroupItem>
+          <Link to={`/messages/${message.username}`}>
+            <MessageGroupItem key={message._id}>
+              <UserProfilePicture
+                src={
+                  message.profilePicture
+                    ? message.profilePicture
+                    : ProfilePicPlaceHolder
+                }
+              />
+              <UserName>{message.name}</UserName>
+            </MessageGroupItem>
+          </Link>
         ))}
       </MessagePageContainer>
+    );
+  }
+  if (!loading && userMessages.length <= 0) {
+    return (
+      <EmptyMessagesPageContainer>
+        <EmptyMessagesContainer>
+          <EmptyMessageGraphic
+            src={UndrawImage}
+            alt="two people looking at each other from undraw"
+          />
+          <EmptyMessageText>
+            Oops! Looks like you have no messages. Get out there guardian and
+            find your match!
+          </EmptyMessageText>
+        </EmptyMessagesContainer>
+      </EmptyMessagesPageContainer>
     );
   }
 };
@@ -60,6 +78,12 @@ const MessagePageContainer = styled.section`
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   grid-gap: 20px;
   justify-items: center;
+`;
+const EmptyMessagesPageContainer = styled.section`
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const MessageGroupItem = styled.div`
   width: 300px;
@@ -86,5 +110,19 @@ const UserProfilePicture = styled.img`
 const UserName = styled.h4`
   color: hsl(209, 20%, 25%);
   padding-left: 15px;
+`;
+const EmptyMessagesContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: hsl(209, 24%, 16%);
+  padding: 10px;
+`;
+const EmptyMessageText = styled.h4`
+  margin-top: 50px;
+`;
+const EmptyMessageGraphic = styled.img`
+  height: 200px;
 `;
 export default MessagesHomePage;

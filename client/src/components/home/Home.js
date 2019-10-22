@@ -30,7 +30,6 @@ const Home = props => {
   const [offset, setOffset] = useState(0);
   const ref = useRef();
   const onScreen = useOnScreen(ref);
-  const token = Cookies.get("token");
   const [user] = useContext(UserContext);
   const [showUser, setShowUser] = useState(false);
   const [requestedUser, setrequestedUser] = useState({});
