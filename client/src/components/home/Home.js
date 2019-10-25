@@ -5,24 +5,8 @@ import axios from "axios";
 import useOnScreen from "../helpers/useInfiniteScroll";
 import { device } from "../helpers/mediaQueries";
 import Cookies from "js-cookie";
-import { toast } from "react-toastify";
 import io from "socket.io-client";
 import { UserContext } from "../context/UserContext";
-const token = Cookies.get("token");
-
-const Msg = ({ user, id, setUserNotificationId }) => {
-  const handleClick = () => {
-    setUserNotificationId(id);
-  };
-  return (
-    <ToastMessageContainer>
-      <ToastMessage> {user} wants to chat</ToastMessage>
-      <ToastProfileButton onClick={handleClick}>
-        View Profile
-      </ToastProfileButton>
-    </ToastMessageContainer>
-  );
-};
 
 const Home = props => {
   const [userList, setUserList] = useState([]);
@@ -31,10 +15,7 @@ const Home = props => {
   const ref = useRef();
   const onScreen = useOnScreen(ref);
   const [user] = useContext(UserContext);
-  const [showUser, setShowUser] = useState(false);
-  const [requestedUser, setrequestedUser] = useState({});
-  const [userNotificationId, setUserNotificationId] = useState();
-  const [currentUserUsername, setCurrentUserUsername] = useState();
+  const token = Cookies.get("token");
 
   let config = {
     headers: { Authorization: "Bearer " + token }
@@ -43,45 +24,15 @@ const Home = props => {
 
   useEffect(() => {
     fetchUsers();
-    socket.on("connect", () => console.log("connected"));
   }, []);
 
   //Checks for unseen notifications on user login
   useEffect(() => {
-    if (user.matched) {
-      user.matched.forEach(match => {
-        if (match.viewed === false) {
-          showToast(match.username, match.id);
-          axios.post("/users/setViewedMatched", { user, id: match.id }, config);
-        }
-      });
-    }
-
-    socket.on("recievedChatRequest", data => {
-      setrequestedUser(data.requestedUser);
-      setCurrentUserUsername(data.currentUser);
-    });
-
     setOffset(0);
     setUserList([]);
     setuserCount(0);
     fetchUsers();
   }, [user]);
-
-  //Runs whenever user clicks view profile on notification toast
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      const res = await axios.get(
-        `/users/fetchMatchedUserDetails?username=${userNotificationId}`,
-        config
-      );
-      setrequestedUser(res.data.user);
-    };
-    if (userNotificationId) {
-      fetchUserProfile();
-      setShowUser(true);
-    }
-  }, [userNotificationId]);
 
   //Use effect for the infinite loading component
   useEffect(() => {
@@ -110,17 +61,6 @@ const Home = props => {
     }
   }, [onScreen]);
 
-  useEffect(() => {
-    if (user.username && currentUserUsername === user.username) {
-      axios.post(
-        "/users/setViewedMatched",
-        { user, id: requestedUser.id },
-        config
-      );
-      showToast(requestedUser.name, requestedUser.id);
-    }
-  }, [currentUserUsername]);
-
   // Fetches users on page load
   const fetchUsers = async () => {
     let res;
@@ -144,44 +84,7 @@ const Home = props => {
     axios.post("/users/updateSentMatches", { user, clickedUser }, config);
     axios.post("/users/handleMatchedUser", { user, clickedUser }, config);
   };
-  const handleAccepted = async () => {
-    await axios.post(
-      "/users/createMessageGroup",
-      { user, requestedUser },
-      config
-    );
-    const res = await axios.post(
-      "/users/acceptMatchRequest",
-      {
-        user,
-        requestedUser
-      },
-      config
-    );
-    if (res.status === 200) {
-      props.history.push("/messages");
-    }
-  };
-  const handleDeclined = async () => {};
-  //Toast config
-  const showToast = (username, id) => {
-    toast(
-      <Msg
-        id={id}
-        user={username}
-        setShowUser={setShowUser}
-        setUserNotificationId={setUserNotificationId}
-      />,
-      {
-        position: "top-right",
-        autoClose: false,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true
-      }
-    );
-  };
+
   return (
     <UserListContainer>
       {userList.map(userItem => (
@@ -200,53 +103,9 @@ const Home = props => {
       >
         Loading
       </LoadingContainer>
-      {showUser && (
-        <UserProfileContainer>
-          <UserCardContainer>
-            <ProfileCard user={requestedUser} showChatBtn={false} />
-            <ChatRequestBtnContainer>
-              <UserChatRequestBtn
-                color="hsl(102, 97%, 16%)"
-                background="hsl(101, 100%, 80%)"
-                onClick={handleAccepted}
-              >
-                Accept
-              </UserChatRequestBtn>
-              <UserChatRequestBtn
-                color="hsl(0, 85%, 27%)"
-                background="hsl(0, 100%, 80%)"
-                onClick={handleDeclined}
-              >
-                Decline
-              </UserChatRequestBtn>
-            </ChatRequestBtnContainer>
-          </UserCardContainer>
-        </UserProfileContainer>
-      )}
     </UserListContainer>
   );
 };
-
-const ToastMessageContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-const ToastMessage = styled.span`
-  margin-bottom: 5px;
-`;
-const ToastProfileButton = styled.button`
-  background: hsl(209, 20%, 25%);
-  color: hsl(216, 33%, 97%);
-  border: none;
-  outline: none;
-  height: 30px;
-  width: 100px;
-  font-size: 14px;
-  border-radius: 5px;
-  cursor: pointer;
-  align-self: end;
-  margin-left: auto;
-`;
 
 const UserListContainer = styled.section`
   height: 100%;
@@ -262,32 +121,6 @@ const UserListContainer = styled.section`
 `;
 const ProfileCardContainer = styled.div`
   margin: 50px 0;
-`;
-const UserProfileContainer = styled.div`
-  background: hsla(0, 0%, 0%, 0.4);
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-const UserCardContainer = styled.div``;
-const ChatRequestBtnContainer = styled.div`
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-evenly;
-`;
-const UserChatRequestBtn = styled.button`
-  border: none;
-  background: ${props => props.background};
-  color: ${props => props.color};
-  height: 30px;
-  width: 100px;
-  border-radius: 6px;
-  cursor: pointer;
 `;
 const LoadingContainer = styled.div`
   opacity: 0;

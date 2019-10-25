@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React from "react";
 import "./App.css";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import Homepage from "./components/homepage/Homepage";
@@ -12,6 +12,8 @@ import Cookies from "js-cookie";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./components/context/UserContext";
+import NotificationContainer from "./components/notificationContainer/NotificationContainer";
+import io from "socket.io-client";
 
 const LoggedInRoute = ({ component: Component, ...rest }) => (
   <Route
@@ -32,41 +34,44 @@ const ProtectedRoute = ({ component: Component, ...rest }) => (
 );
 
 const App = () => {
+  const socket = io.connect("http://localhost:5000", { secure: true });
   return (
     <BrowserRouter>
       <UserProvider>
         <div className="App">
-          <NavBar />
-          <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/homepage" component={Homepage} />
-            <LoggedInRoute exact path="/login" component={Login} />
-            <LoggedInRoute
-              exact
-              path="/new-profile"
-              component={CreateProfile}
+          <NotificationContainer socket={socket}>
+            <NavBar />
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/homepage" component={Homepage} />
+              <LoggedInRoute exact path="/login" component={Login} />
+              <LoggedInRoute
+                exact
+                path="/new-profile"
+                component={CreateProfile}
+              />
+              <ProtectedRoute
+                exact
+                path="/messages"
+                component={MessagesHomePage}
+              />
+              <ProtectedRoute
+                exact
+                path="/messages/:username"
+                component={MessagesPage}
+              />
+            </Switch>{" "}
+            <ToastContainer
+              position="top-right"
+              autoClose={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnVisibilityChange
+              draggable
+              draggablePercent={60}
             />
-            <ProtectedRoute
-              exact
-              path="/messages"
-              component={MessagesHomePage}
-            />
-            <ProtectedRoute
-              exact
-              path="/messages/:username"
-              component={MessagesPage}
-            />
-          </Switch>{" "}
-          <ToastContainer
-            position="top-right"
-            autoClose={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnVisibilityChange
-            draggable
-            draggablePercent={60}
-          />
+          </NotificationContainer>
         </div>
       </UserProvider>
     </BrowserRouter>
