@@ -24,14 +24,20 @@ const LoggedInRoute = ({ component: Component, ...rest }) => (
   />
 );
 
-const ProtectedRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={props =>
-      Cookies.get("token") ? <Component {...props} /> : <Redirect to="/" />
-    }
-  />
-);
+const ProtectedRoute = ({ component: Component, socket, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        Cookies.get("token") ? (
+          <Component socket={socket} {...props} />
+        ) : (
+          <Redirect to="/" />
+        )
+      }
+    />
+  );
+};
 
 const App = () => {
   const socket = io.connect("http://localhost:5000", { secure: true });
@@ -59,6 +65,7 @@ const App = () => {
                 exact
                 path="/messages/:username"
                 component={MessagesPage}
+                socket={socket}
               />
             </Switch>{" "}
             <ToastContainer

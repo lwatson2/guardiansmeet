@@ -41,7 +41,6 @@ const NotificationContainer = props => {
     );
   };
   useEffect(() => {
-    console.log(user);
     if (user.matched) {
       user.matched.forEach(match => {
         if (match.viewed === false) {
