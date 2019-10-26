@@ -21,7 +21,6 @@ export const MessagesItemContainer = styled.div`
   display: flex;
   max-width: 80%;
   align-items: center;
-  justify-content: center;
   padding: 5px;
   margin-right: 5px;
   margin-left: ${props => props.leftMargin};
@@ -32,12 +31,14 @@ export const MessagesItemContainer = styled.div`
 `;
 export const UserProfilePicture = styled.img`
   height: 35px;
+  width: 35px;
   align-self: baseline;
   border: 1px solid #7a0ecd;
   border-radius: 50%;
   margin: 0 5px;
   @media ${device.tablet} {
     height: 50px;
+    width: 50px;
     margin: 0 15px;
   }
 `;

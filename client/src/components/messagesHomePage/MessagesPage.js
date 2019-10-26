@@ -6,17 +6,30 @@ import MessagesPage_View from "./MessagesPage_View";
 
 const MessagesPage = ({ socket }) => {
   const [user] = useContext(UserContext);
-  const [messages, setMessages] = useState();
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState({});
   useEffect(() => {
     socket.on("message", data => {
-      updateMessages(data);
+      setNewMessage(data);
     });
   }, []);
   const handleSendMessage = () => {
-    socket.emit("sendMessage", { values, user });
+    if (user.username) {
+      socket.emit("sendMessage", { message: values.message, user });
+      values.message = "";
+    }
   };
+  useEffect(() => {
+    if (newMessage.message) {
+      if (messages.length <= 0) {
+        setMessages([newMessage]);
+      } else {
+        setMessages(message => [...message, newMessage]);
+      }
+    }
+  }, [newMessage]);
   const updateMessages = data => {
-    setMessages(prevState => [...prevState, { data }]);
+    console.log(messages.length);
   };
   const { values, handleChange, handleSubmit, errors } = useForm(
     handleSendMessage,

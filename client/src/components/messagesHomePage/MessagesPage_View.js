@@ -24,21 +24,19 @@ const MessagesPage_View = ({
   return (
     <MessagesPageContainer>
       <MessagesContainer>
-        {messages &&
+        {messages.length > 0 &&
           messages.map(message => (
             <MessagesItemContainer
-              leftMargin={
-                user.username === message.user.username ? "0" : "auto"
-              }
+              leftMargin={user.username == message.user.username ? "auto" : "0"}
               direction={
-                user.username === message.user.username ? "row" : "row-reverse"
+                user.username == message.user.username ? "row-reverse" : "row"
               }
             >
-              {user.username === message.user.username && (
+              {user.username !== message.user.username && (
                 <UserProfilePicture
                   src={
-                    user.profilePicture
-                      ? user.profilePicture
+                    message.user.profilePicture
+                      ? message.user.profilePicture
                       : ProfilePicPlaceHolder
                   }
                 />
@@ -46,7 +44,6 @@ const MessagesPage_View = ({
               <MessageDetails>{message.message}</MessageDetails>
             </MessagesItemContainer>
           ))}{" "}
-        }
       </MessagesContainer>
       <InputBottomOfPageContainer>
         <InputContainer>

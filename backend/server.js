@@ -30,6 +30,10 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET
 });
 
+function getConvoID(id1, id2) {
+  return id1 <= id2 ? id1 + ":" + id2 : id2 + ":" + id1;
+}
+
 //Socket.io setup
 const io = socket(server);
 
@@ -41,6 +45,6 @@ io.on("connection", socket => {
     });
   });
   socket.on("sendMessage", data => {
-    socket.emit("message", data);
+    io.emit("message", data);
   });
 });
