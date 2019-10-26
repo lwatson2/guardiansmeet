@@ -35,10 +35,12 @@ const io = socket(server);
 
 io.on("connection", socket => {
   socket.on("sendChatRequest", data => {
-    socket.broadcast.emit("test");
     socket.broadcast.emit("recievedChatRequest", {
       requestedUser: data.user,
       currentUser: data.clickedUser.username
     });
+  });
+  socket.on("sendMessage", data => {
+    socket.emit("message", data);
   });
 });

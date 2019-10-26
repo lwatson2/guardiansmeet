@@ -24,87 +24,29 @@ const MessagesPage_View = ({
   return (
     <MessagesPageContainer>
       <MessagesContainer>
-        <MessagesItemContainer leftMargin="0" direction="row">
-          <UserProfilePicture
-            src={
-              user.profilePicture ? user.profilePicture : ProfilePicPlaceHolder
-            }
-          />
-          <MessageDetails>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita,
-            dignissimos. Deserunt non quod eaque, quaerat consectetur maiores,
-            error culpa reiciendis tempora ad nam? Ipsam, vitae. Quam
-            consectetur ut quisquam dolor?
-          </MessageDetails>
-        </MessagesItemContainer>
-        <MessagesItemContainer leftMargin="auto" direction="row-reverse">
-          <MessageDetails>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita,
-            dignissimos. Deserunt non quod eaque, quaerat consectetur maiores,
-            error culpa reiciendis tempora ad nam? Ipsam, vitae. Quam
-            consectetur ut quisquam dolor?
-          </MessageDetails>
-        </MessagesItemContainer>
-        <MessagesItemContainer leftMargin="0" direction="row">
-          <UserProfilePicture
-            src={
-              user.profilePicture ? user.profilePicture : ProfilePicPlaceHolder
-            }
-          />
-          <MessageDetails>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita,
-            dignissimos. Deserunt non quod eaque, quaerat consectetur maiores,
-            error culpa reiciendis tempora ad nam? Ipsam, vitae. Quam
-            consectetur ut quisquam dolor?
-          </MessageDetails>
-        </MessagesItemContainer>
-        <MessagesItemContainer leftMargin="0" direction="row">
-          <UserProfilePicture
-            src={
-              user.profilePicture ? user.profilePicture : ProfilePicPlaceHolder
-            }
-          />
-          <MessageDetails>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita,
-            dignissimos. Deserunt non quod eaque, quaerat consectetur maiores,
-            error culpa reiciendis tempora ad nam? Ipsam, vitae. Quam
-            consectetur ut quisquam dolor?
-          </MessageDetails>
-        </MessagesItemContainer>
-        <MessagesItemContainer leftMargin="auto" direction="row-reverse">
-          <MessageDetails>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita,
-            dignissimos. Deserunt non quod eaque, quaerat consectetur maiores,
-            error culpa reiciendis tempora ad nam? Ipsam, vitae. Quam
-            consectetur ut quisquam dolor?
-          </MessageDetails>
-        </MessagesItemContainer>
-        <MessagesItemContainer leftMargin="0" direction="row">
-          <UserProfilePicture
-            src={
-              user.profilePicture ? user.profilePicture : ProfilePicPlaceHolder
-            }
-          />
-          <MessageDetails>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita,
-            dignissimos. Deserunt non quod eaque, quaerat consectetur maiores,
-            error culpa reiciendis tempora ad nam? Ipsam, vitae. Quam
-            consectetur ut quisquam dolor?
-          </MessageDetails>
-        </MessagesItemContainer>
-        <MessagesItemContainer leftMargin="0" direction="row">
-          <UserProfilePicture
-            src={
-              user.profilePicture ? user.profilePicture : ProfilePicPlaceHolder
-            }
-          />
-          <MessageDetails>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita,
-            dignissimos. Deserunt non quod eaque, quaerat consectetur maiores,
-            error culpa reiciendis tempora ad nam? Ipsam, vitae. Quam
-            consectetur ut quisquam dolor?
-          </MessageDetails>
-        </MessagesItemContainer>
+        {messages &&
+          messages.map(message => (
+            <MessagesItemContainer
+              leftMargin={
+                user.username === message.user.username ? "0" : "auto"
+              }
+              direction={
+                user.username === message.user.username ? "row" : "row-reverse"
+              }
+            >
+              {user.username === message.user.username && (
+                <UserProfilePicture
+                  src={
+                    user.profilePicture
+                      ? user.profilePicture
+                      : ProfilePicPlaceHolder
+                  }
+                />
+              )}
+              <MessageDetails>{message.message}</MessageDetails>
+            </MessagesItemContainer>
+          ))}{" "}
+        }
       </MessagesContainer>
       <InputBottomOfPageContainer>
         <InputContainer>
