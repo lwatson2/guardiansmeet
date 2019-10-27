@@ -37,6 +37,7 @@ function getConvoID(id1, id2) {
 //Socket.io setup
 const io = socket(server);
 
+let room;
 io.on("connection", socket => {
   socket.on("sendChatRequest", data => {
     socket.broadcast.emit("recievedChatRequest", {
@@ -45,7 +46,16 @@ io.on("connection", socket => {
     });
   });
   socket.on("sendMessage", data => {
-    console.log(data);
-    //io.emit("message", data);
+    io.sockets.in(data.room).emit("newMessage", {
+      messageDetails: data.messageDetails,
+      sender: data.sender
+    });
+  });
+  socket.on("joinroom", data => {
+    if (data.userId && data.connectedUserId) {
+      room = getConvoID(data.userId, data.connectedUserId);
+      socket.join(room);
+      io.in(room).emit("joinedroom", room);
+    }
   });
 });

@@ -6,14 +6,18 @@ import MessagesPage_View from "./MessagesPage_View";
 
 const MessagesPage = props => {
   const [user] = useContext(UserContext);
-  const [messages, setMessages] = useState([]);
+  const [messagesList, setMessagesList] = useState([]);
   const [newMessage, setNewMessage] = useState({});
-  const [stuff, setStuff] = useState();
+  const [messageGroupDetails, setMessageGroupDetails] = useState({});
+  const [socketRoom, setsocketRoom] = useState();
   const { socket } = props;
   useEffect(() => {
-    console.log(user);
-    socket.on("message", data => {
+    socket.on("newMessage", data => {
+      console.log(data);
       setNewMessage(data);
+    });
+    socket.on("joinedroom", data => {
+      setsocketRoom(data);
     });
   }, []);
   useEffect(() => {
@@ -24,31 +28,40 @@ const MessagesPage = props => {
       );
     }
     console.log(message);
-    setMessage(message[0]);
-    //message = message[0];
+    setMessageGroupDetails(message[0]);
   }, [user]);
+  useEffect(() => {
+    if (messageGroupDetails) {
+      socket.emit("joinroom", {
+        userId: user.id,
+        connectedUserId: messageGroupDetails.id
+      });
+    }
+    if (messageGroupDetails && messageGroupDetails.messages) {
+      setMessagesList(messageGroupDetails.messages);
+    }
+    return () => {};
+  }, [messageGroupDetails]);
   const handleSendMessage = () => {
     if (user.username) {
       socket.emit("sendMessage", {
-        message: values.message,
-        user,
-        connectedUser: stuff
+        messageDetails: values.message,
+        sender: { id: user.id, profilePicture: user.profilePicture },
+        room: socketRoom
       });
       values.message = "";
     }
   };
   useEffect(() => {
-    if (newMessage.message) {
-      if (messages.length <= 0) {
-        setMessages([newMessage]);
+    if (newMessage.messageDetails) {
+      if (messagesList.length <= 0) {
+        console.log(newMessage);
+        setMessagesList([newMessage]);
       } else {
-        setMessages(message => [...message, newMessage]);
+        setMessagesList(message => [...message, newMessage]);
       }
     }
   }, [newMessage]);
-  const updateMessages = data => {
-    console.log(messages.length);
-  };
   const { values, handleChange, handleSubmit, errors } = useForm(
     handleSendMessage,
     validate
@@ -60,7 +73,7 @@ const MessagesPage = props => {
       values={values}
       handleChange={handleChange}
       handleSubmit={handleSubmit}
-      messages={messages}
+      messagesList={messagesList}
     />
   );
 };

@@ -15,7 +15,7 @@ import {
 
 const MessagesPage_View = ({
   user,
-  messages,
+  messagesList,
   errors,
   values,
   handleChange,
@@ -24,24 +24,22 @@ const MessagesPage_View = ({
   return (
     <MessagesPageContainer>
       <MessagesContainer>
-        {messages.messageList.length > 0 &&
-          messages.map(message => (
+        {messagesList &&
+          messagesList.map(message => (
             <MessagesItemContainer
-              leftMargin={user.username == message.user.username ? "auto" : "0"}
-              direction={
-                user.username == message.user.username ? "row-reverse" : "row"
-              }
+              leftMargin={user.id == message.sender.id ? "auto" : "0"}
+              direction={user.id == message.sender.id ? "row-reverse" : "row"}
             >
-              {user.username !== message.user.username && (
+              {user.id !== message.sender.id && (
                 <UserProfilePicture
                   src={
-                    message.user.profilePicture
-                      ? message.user.profilePicture
+                    message.sender.profilePicture
+                      ? message.sender.profilePicture
                       : ProfilePicPlaceHolder
                   }
                 />
               )}
-              <MessageDetails>{message.message}</MessageDetails>
+              <MessageDetails>{message.messageDetails}</MessageDetails>
             </MessagesItemContainer>
           ))}{" "}
       </MessagesContainer>
