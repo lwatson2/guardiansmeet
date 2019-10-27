@@ -138,7 +138,8 @@ router.post("/login", (req, res, next) => {
               bio: user.bio,
               id: user._id,
               matched: user.matched,
-              sentMatches: user.sentMatches
+              sentMatches: user.sentMatches,
+              messages: user.messages
             }
           });
         }
@@ -184,7 +185,8 @@ router.get("/fetchUserProfile", verifyToken, async (req, res) => {
       bio: userProfile.bio,
       id: userProfile._id,
       matched: userProfile.matched,
-      sentMatches: userProfile.sentMatches
+      sentMatches: userProfile.sentMatches,
+      messages: userProfile.messages
     }
   });
 });
@@ -260,23 +262,6 @@ router.get("/fetchusers", async (req, res) => {
   }
   res.json({ users });
 });
-router.get("/refreshUser", async (req, res) => {
-  let id = req.query.id;
-  const user = await User.findOne({ _id: id });
-  res.json({
-    user: {
-      name: user.name,
-      username: user.username,
-      profilePicture: user.profilePicture,
-      preference: user.preference,
-      age: user.age,
-      bio: user.bio,
-      id: user._id,
-      matched: user.matched,
-      sentMatches: user.sentMatches
-    }
-  });
-});
 
 router.post("/createMessageGroup", verifyToken, async (req, res) => {
   const { user, requestedUser } = req.body;
@@ -289,14 +274,16 @@ router.post("/createMessageGroup", verifyToken, async (req, res) => {
       userProfile.messages.push({
         username: requestedUser.username,
         profilePicture: requestedUser.profilePicture,
-        name: requestedUser.name
+        name: requestedUser.name,
+        id: requestedUser.id
       });
     }
   } else {
     userProfile.messages = {
       username: requestedUser.username,
       profilePicture: requestedUser.profilePicture,
-      name: requestedUser.name
+      name: requestedUser.name,
+      id: requestedUser.id
     };
   }
   await userProfile.save();
@@ -311,14 +298,16 @@ router.post("/createMessageGroup", verifyToken, async (req, res) => {
       requestUserProfile.messages.push({
         username: user.username,
         profilePicture: user.profilePicture,
-        name: user.name
+        name: user.name,
+        id: user.id
       });
     }
   } else {
     requestUserProfile.messages = {
       username: user.username,
       profilePicture: user.profilePicture,
-      name: user.name
+      name: user.name,
+      id: user.id
     };
   }
   await requestUserProfile.save();

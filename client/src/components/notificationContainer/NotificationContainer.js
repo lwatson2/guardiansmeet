@@ -83,7 +83,9 @@ const NotificationContainer = props => {
     <>
       {" "}
       {props.children}{" "}
-      {showUser && <Notification requestedUser={requestedUser} />}
+      {showUser && (
+        <Notification setShowUser={setShowUser} requestedUser={requestedUser} />
+      )}
     </>
   );
 };

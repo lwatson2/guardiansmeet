@@ -24,7 +24,7 @@ const MessagesPage_View = ({
   return (
     <MessagesPageContainer>
       <MessagesContainer>
-        {messages.length > 0 &&
+        {messages.messageList.length > 0 &&
           messages.map(message => (
             <MessagesItemContainer
               leftMargin={user.username == message.user.username ? "auto" : "0"}

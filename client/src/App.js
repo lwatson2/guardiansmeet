@@ -63,7 +63,7 @@ const App = () => {
               />
               <ProtectedRoute
                 exact
-                path="/messages/:username"
+                path="/messages/:id"
                 component={MessagesPage}
                 socket={socket}
               />
