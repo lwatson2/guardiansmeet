@@ -14,7 +14,20 @@ export const MessagesContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
-  height: calc(100% - 92px);
+  height: calc(100% - 120px);
+`;
+export const BackArrowContainer = styled.div`
+  display: flex;
+  background: hsl(216, 33%, 97%);
+  height: 38px;
+  align-items: center;
+  padding-left: 10px;
+  color: hsl(216, 24%, 16%);
+  margin-bottom: 5px;
+  box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.2);
+`;
+export const BackContainerUsername = styled.h3`
+  padding-left: 10px;
 `;
 export const MessagesItemContainer = styled.div`
   margin-bottom: 10px;

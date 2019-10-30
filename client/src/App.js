@@ -14,6 +14,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { UserProvider } from "./components/context/UserContext";
 import NotificationContainer from "./components/notificationContainer/NotificationContainer";
 import io from "socket.io-client";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
+library.add(faArrowLeft);
 
 const LoggedInRoute = ({ component: Component, ...rest }) => (
   <Route

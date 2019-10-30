@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { UserContext } from "../context/UserContext";
 import useForm from "../helpers/FormHelper";
 import validate from "../helpers/MessagesRules";
@@ -12,6 +12,7 @@ const MessagesPage = props => {
   const [messageGroupDetails, setMessageGroupDetails] = useState({});
   const [socketRoom, setsocketRoom] = useState();
   const { socket } = props;
+
   useEffect(() => {
     socket.on("newMessage", data => {
       setNewMessage(data);
@@ -91,6 +92,7 @@ const MessagesPage = props => {
       handleChange={handleChange}
       handleSubmit={handleSubmit}
       messagesList={messagesList}
+      messageGroupDetails={messageGroupDetails}
     />
   );
 };
