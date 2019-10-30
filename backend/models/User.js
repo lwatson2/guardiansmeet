@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const messageSchema = new mongoose.Schema({
   messageDetails: { type: String },
-  sender: { type: String },
+  sender: { id: String, profilePicture: String },
   timestamp: { type: String }
 });
 const messageGroupSchema = new mongoose.Schema({
@@ -10,7 +10,7 @@ const messageGroupSchema = new mongoose.Schema({
   name: { type: String },
   id: { type: String },
   profilePicture: { type: String },
-  messages: { type: messageSchema }
+  messagesList: [{ type: messageSchema }]
 });
 
 const matchedSchema = new mongoose.Schema({

@@ -3,6 +3,7 @@ import { UserContext } from "../context/UserContext";
 import useForm from "../helpers/FormHelper";
 import validate from "../helpers/MessagesRules";
 import MessagesPage_View from "./MessagesPage_View";
+import axios from "axios";
 
 const MessagesPage = props => {
   const [user] = useContext(UserContext);
@@ -13,7 +14,6 @@ const MessagesPage = props => {
   const { socket } = props;
   useEffect(() => {
     socket.on("newMessage", data => {
-      console.log(data);
       setNewMessage(data);
     });
     socket.on("joinedroom", data => {
@@ -22,6 +22,9 @@ const MessagesPage = props => {
   }, []);
   useEffect(() => {
     let message = [];
+    const fetchData = async () => {
+      message = await axios.get("/users/getUserMessages");
+    };
     if (user.messages) {
       message = user.messages.filter(
         message => message.id === props.match.params.id
@@ -37,17 +40,31 @@ const MessagesPage = props => {
         connectedUserId: messageGroupDetails.id
       });
     }
-    if (messageGroupDetails && messageGroupDetails.messages) {
-      setMessagesList(messageGroupDetails.messages);
+    if (messageGroupDetails && messageGroupDetails.messagesList) {
+      setMessagesList(messageGroupDetails.messagesList);
     }
     return () => {};
   }, [messageGroupDetails]);
   const handleSendMessage = () => {
+    let timestamp = new Date().toLocaleString([], {
+      hour: "numeric",
+      minute: "2-digit",
+      month: "2-digit",
+      day: "2-digit"
+    });
     if (user.username) {
       socket.emit("sendMessage", {
         messageDetails: values.message,
         sender: { id: user.id, profilePicture: user.profilePicture },
-        room: socketRoom
+        room: socketRoom,
+        timestamp
+      });
+      axios.post(`/users/updateChat/${user.id}`, {
+        messageDetails: values.message,
+        sender: { id: user.id, profilePicture: user.profilePicture },
+        secondUserId: props.match.params.id,
+        timestamp,
+        groupId: messageGroupDetails._id
       });
       values.message = "";
     }

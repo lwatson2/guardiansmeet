@@ -10,7 +10,9 @@ import {
   InputBottomOfPageContainer,
   InputContainer,
   MessageInput,
-  MessageSubmitButton
+  MessageSubmitButton,
+  MessageTimeStamp,
+  MessageDetailsContinaer
 } from "./MessagesPage_Styles";
 
 const MessagesPage_View = ({
@@ -24,7 +26,7 @@ const MessagesPage_View = ({
   return (
     <MessagesPageContainer>
       <MessagesContainer>
-        {messagesList &&
+        {messagesList[0] &&
           messagesList.map(message => (
             <MessagesItemContainer
               leftMargin={user.id == message.sender.id ? "auto" : "0"}
@@ -39,7 +41,10 @@ const MessagesPage_View = ({
                   }
                 />
               )}
-              <MessageDetails>{message.messageDetails}</MessageDetails>
+              <MessageDetailsContinaer>
+                <MessageDetails>{message.messageDetails}</MessageDetails>
+                <MessageTimeStamp>{message.timestamp}</MessageTimeStamp>
+              </MessageDetailsContinaer>
             </MessagesItemContainer>
           ))}{" "}
       </MessagesContainer>

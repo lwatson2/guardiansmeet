@@ -48,7 +48,14 @@ export const MessageDetails = styled.p`
   background: hsl(209, 20%, 25%);
   border-radius: 6px;
   color: hsl(216, 33%, 97%);
+  word-break: break-word;
   box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.3);
+`;
+export const MessageDetailsContinaer = styled.div``;
+export const MessageTimeStamp = styled.p`
+  color: hsla(210, 24%, 16%, 0.8);
+  padding-top: 5px;
+  font-size: 12px;
 `;
 export const InputBottomOfPageContainer = styled.div`
   position: absolute;

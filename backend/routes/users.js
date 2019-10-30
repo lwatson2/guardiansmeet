@@ -7,6 +7,7 @@ const User = require("../models/User");
 const LocalStrategy = require("passport-local").Strategy;
 const mongoose = require("mongoose");
 const cloudinary = require("cloudinary").v2;
+var ObjectId = require("mongodb").ObjectID;
 const { verifyToken } = require("../config/jwt");
 
 const saltRounds = 10;
@@ -337,6 +338,38 @@ router.get("/getUserMessages", async (req, res) => {
   } else {
     res.json({ messages: [] });
   }
+});
+router.post("/updateChat/:id", (req, res) => {
+  const { id } = req.params;
+  const { messageDetails, sender, secondUserId, timestamp, groupId } = req.body;
+
+  User.findOneAndUpdate(
+    { _id: ObjectId(sender.id), "messages._id": groupId },
+    {
+      $push: {
+        "messages.$.messagesList": { messageDetails, sender, timestamp }
+      }
+    },
+    (err, doc) => {
+      if (err) {
+        console.log(err);
+      }
+    }
+  );
+  User.findOneAndUpdate(
+    { _id: ObjectId(secondUserId), "messages.id": sender.id },
+    {
+      $push: {
+        "messages.$.messagesList": { messageDetails, sender, timestamp }
+      }
+    },
+    (err, doc) => {
+      if (err) {
+        console.log(err);
+      }
+      res.sendStatus(200);
+    }
+  );
 });
 router.get("/logout", (req, res) => {
   req.logOut();
