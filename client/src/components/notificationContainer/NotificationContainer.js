@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { UserContext } from "../context/UserContext";
+import { NewMessageContext } from "../context/NewMessageContext";
 import NotificationMessage from "../notification/NotificationMessage_View";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -11,6 +12,7 @@ const NotificationContainer = props => {
   const [userNotificationId, setUserNotificationId] = useState();
   const [currentUserUsername, setCurrentUserUsername] = useState();
   const [user] = useContext(UserContext);
+  const [newMessage, setNewMessage] = useContext(NewMessageContext);
   const [showUser, setShowUser] = useState(false);
   const { socket } = props;
   const token = Cookies.get("token");
@@ -47,6 +49,24 @@ const NotificationContainer = props => {
           showToast(match.username, match.id);
           axios.post("/users/setViewedMatched", { user, id: match.id }, config);
         }
+      });
+    }
+    let groupIdsSet = new Set();
+    if (user.messages) {
+      console.log(user.messages);
+      user.messages.forEach(message => {
+        message.messagesList.map(messageItem => {
+          if (messageItem.viewed === false) {
+            groupIdsSet.add(message._id);
+          }
+        });
+      });
+    }
+    const convertedGroupIdsArray = Array.from(groupIdsSet);
+    if (convertedGroupIdsArray.length > 0) {
+      setNewMessage({
+        groupId: convertedGroupIdsArray,
+        viewed: false
       });
     }
     socket.on("recievedChatRequest", data => {

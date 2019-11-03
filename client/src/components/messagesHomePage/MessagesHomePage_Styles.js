@@ -23,12 +23,21 @@ export const MessageGroupItem = styled.div`
   box-shadow: 0 5px 15px hsla(0, 0%, 0%, 0.3);
   transition: all 0.2s ease;
   cursor: pointer;
+  position: ${props => props.position};
   :hover {
     box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.3);
   }
   :focus {
     box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.3);
   }
+`;
+export const UnreadMessageNotificationIcon = styled.svg`
+  height: 15px;
+  width: 15px;
+  position: absolute;
+  color: hsl(360, 90%, 57%);
+  top: -10px;
+  right: -1px;
 `;
 export const UserProfilePicture = styled.img`
   height: 50px;

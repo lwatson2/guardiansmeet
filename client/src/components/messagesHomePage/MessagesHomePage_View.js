@@ -9,11 +9,13 @@ import {
   UserName,
   EmptyMessagesContainer,
   EmptyMessageText,
-  EmptyMessageGraphic
+  EmptyMessageGraphic,
+  UnreadMessageNotificationIcon
 } from "./MessagesHomePage_Styles";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const MessagesHomePage_View = ({ loading, userMessages }) => {
+const MessagesHomePage_View = ({ loading, userMessages, newMessage }) => {
   if (loading) {
     return <div>Loading....</div>;
   }
@@ -22,7 +24,7 @@ const MessagesHomePage_View = ({ loading, userMessages }) => {
       <MessagePageContainer>
         {userMessages.map(message => (
           <Link key={message._id} to={`/messages/${message.id}`}>
-            <MessageGroupItem>
+            <MessageGroupItem position="relative">
               <UserProfilePicture
                 src={
                   message.profilePicture
@@ -31,6 +33,11 @@ const MessagesHomePage_View = ({ loading, userMessages }) => {
                 }
               />
               <UserName>{message.name}</UserName>
+              {newMessage.groupId.includes(message._id) && (
+                <UnreadMessageNotificationIcon>
+                  <FontAwesomeIcon icon="exclamation" size="sm" />
+                </UnreadMessageNotificationIcon>
+              )}
             </MessageGroupItem>
           </Link>
         ))}

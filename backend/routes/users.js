@@ -371,6 +371,25 @@ router.post("/updateChat/:id", (req, res) => {
     }
   );
 });
+router.post("/updateReadMessages", (req, res) => {
+  const { groupId, userId } = req.body;
+  console.log(groupId);
+  User.findOneAndUpdate(
+    {
+      _id: ObjectId(userId),
+      messages: { $elemMatch: { _id: ObjectId(groupId) } }
+    },
+    { $set: { "messages.$[message].$[].viewed": true } },
+
+    {
+      arrayFilters: [{ "message._id": ObjectId(groupId) }],
+      multi: true
+    },
+    doc => {
+      console.log(doc);
+    }
+  );
+});
 router.get("/logout", (req, res) => {
   req.logOut();
   res.sendStatus(200);

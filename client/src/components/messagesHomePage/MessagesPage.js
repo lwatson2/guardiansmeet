@@ -40,6 +40,11 @@ const MessagesPage = props => {
         userId: user.id,
         connectedUserId: messageGroupDetails.id
       });
+      if (messageGroupDetails._id)
+        axios.post("/users/updateReadMessages", {
+          groupId: messageGroupDetails._id,
+          userId: user.id
+        });
     }
     if (messageGroupDetails && messageGroupDetails.messagesList) {
       setMessagesList(messageGroupDetails.messagesList);

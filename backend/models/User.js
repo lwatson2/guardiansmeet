@@ -3,7 +3,8 @@ const mongoose = require("mongoose");
 const messageSchema = new mongoose.Schema({
   messageDetails: { type: String },
   sender: { id: String, profilePicture: String },
-  timestamp: { type: String }
+  timestamp: { type: String },
+  viewed: { type: Boolean, default: false }
 });
 const messageGroupSchema = new mongoose.Schema({
   username: { type: String },
