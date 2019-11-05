@@ -12,7 +12,6 @@ const Notification_View = ({
   handleAccepted,
   handleDeclined
 }) => {
-  console.log(requestedUser);
   if (requestedUser.name) {
     return (
       <UserProfileContainer>

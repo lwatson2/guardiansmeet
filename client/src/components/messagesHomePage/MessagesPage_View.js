@@ -79,23 +79,24 @@ const MessagesPage_View = ({
           ))}
       </MessagesContainer>
       <InputBottomOfPageContainer>
-        <InputContainer>
-          <MessageInput
-            borderColor={errors.message ? "1px solid hsl(0, 75%, 45%)" : "none"}
-            type="text"
-            value={values.message || ""}
-            onChange={handleChange}
-            id="message"
-            name="message"
-            placeholder="Send message..."
-          />
-          <MessageSubmitButton
-            onClick={handleSubmit}
-            disabled={values.message ? false : true}
-          >
-            Send
-          </MessageSubmitButton>
-        </InputContainer>
+        <form onSubmit={handleSubmit}>
+          <InputContainer>
+            <MessageInput
+              borderColor={
+                errors.message ? "1px solid hsl(0, 75%, 45%)" : "none"
+              }
+              type="text"
+              value={values.message || ""}
+              onChange={handleChange}
+              id="message"
+              name="message"
+              placeholder="Send message..."
+            />
+            <MessageSubmitButton disabled={values.message ? false : true}>
+              Send
+            </MessageSubmitButton>
+          </InputContainer>
+        </form>
       </InputBottomOfPageContainer>
     </MessagesPageContainer>
   );

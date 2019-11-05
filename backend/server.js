@@ -48,7 +48,8 @@ io.on("connection", socket => {
   socket.on("sendMessage", data => {
     io.sockets.in(data.room).emit("newMessage", {
       messageDetails: data.messageDetails,
-      sender: data.sender
+      sender: data.sender,
+      timestamp: data.timestamp
     });
   });
   socket.on("joinroom", data => {

@@ -16,8 +16,8 @@ const NavBar = props => {
   const token = Cookies.get("token");
   const [user, setUser] = useContext(UserContext);
   const [newMessage, setNewMessage] = useContext(NewMessageContext);
-
-  const logout = async () => {
+  let paramsUrlId;
+  const logout = async props => {
     setLoggedIn(false);
     setUser({});
     Cookies.remove("token");
@@ -26,9 +26,20 @@ const NavBar = props => {
     props.history.push("/");
   };
   useEffect(() => {
-    if (newMessage.viewed === false) {
-      setShowNewMessageNotification(true);
+    if (props.location.pathname !== "/") {
+      paramsUrlId = props.location.pathname.match(/[^\/]+$/)[0];
     }
+    if (paramsUrlId && !newMessage.groupId.includes(paramsUrlId)) {
+      setShowNewMessageNotification(false);
+    } else if (props.location.pathname === "/messages") {
+      setShowNewMessageNotification(false);
+    } else if (
+      newMessage.viewed === false
+    ) {
+    
+    setShowNewMessageNotification(true);
+  }
+    
   }, [newMessage]);
   useEffect(() => {
     if (token && !user.username) {

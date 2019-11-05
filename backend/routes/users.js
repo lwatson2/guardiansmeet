@@ -371,24 +371,21 @@ router.post("/updateChat/:id", (req, res) => {
     }
   );
 });
-router.post("/updateReadMessages", (req, res) => {
+router.post("/updateReadMessages", async (req, res) => {
   const { groupId, userId } = req.body;
-  console.log(groupId);
-  User.findOneAndUpdate(
-    {
-      _id: ObjectId(userId),
-      messages: { $elemMatch: { _id: ObjectId(groupId) } }
-    },
-    { $set: { "messages.$[message].$[].viewed": true } },
-
-    {
-      arrayFilters: [{ "message._id": ObjectId(groupId) }],
-      multi: true
-    },
-    doc => {
-      console.log(doc);
+  const user = await User.findOne({
+    _id: ObjectId(userId)
+  });
+  user.messages.forEach(messageArray => {
+    if (messageArray._id == groupId) {
+      messageArray.messagesList.map(messagesItem => {
+        if (messagesItem.viewed === false) {
+          messagesItem.viewed = true;
+        }
+      });
     }
-  );
+  });
+  user.save();
 });
 router.get("/logout", (req, res) => {
   req.logOut();

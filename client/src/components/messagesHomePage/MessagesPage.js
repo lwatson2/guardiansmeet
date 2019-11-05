@@ -4,18 +4,21 @@ import useForm from "../helpers/FormHelper";
 import validate from "../helpers/MessagesRules";
 import MessagesPage_View from "./MessagesPage_View";
 import axios from "axios";
+import { NewMessageContext } from "../context/NewMessageContext";
 
 const MessagesPage = props => {
   const [user] = useContext(UserContext);
   const [messagesList, setMessagesList] = useState([]);
-  const [newMessage, setNewMessage] = useState({});
+  const [newMessageItem, setNewMessageItem] = useState({});
   const [messageGroupDetails, setMessageGroupDetails] = useState({});
   const [socketRoom, setsocketRoom] = useState();
   const { socket } = props;
+  const [newMessage, setNewMessage] = useContext(NewMessageContext);
 
   useEffect(() => {
+    setNewMessage({ viewed: true, groupId: [] });
     socket.on("newMessage", data => {
-      setNewMessage(data);
+      setNewMessageItem(data);
     });
     socket.on("joinedroom", data => {
       setsocketRoom(data);
@@ -28,10 +31,9 @@ const MessagesPage = props => {
     };
     if (user.messages) {
       message = user.messages.filter(
-        message => message.id === props.match.params.id
+        message => message._id === props.match.params.id
       );
     }
-    console.log(message);
     setMessageGroupDetails(message[0]);
   }, [user]);
   useEffect(() => {
@@ -76,15 +78,14 @@ const MessagesPage = props => {
     }
   };
   useEffect(() => {
-    if (newMessage.messageDetails) {
+    if (newMessageItem.messageDetails) {
       if (messagesList.length <= 0) {
-        console.log(newMessage);
-        setMessagesList([newMessage]);
+        setMessagesList([newMessageItem]);
       } else {
-        setMessagesList(message => [...message, newMessage]);
+        setMessagesList(message => [...message, newMessageItem]);
       }
     }
-  }, [newMessage]);
+  }, [newMessageItem]);
   const { values, handleChange, handleSubmit, errors } = useForm(
     handleSendMessage,
     validate

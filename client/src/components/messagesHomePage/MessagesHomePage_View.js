@@ -23,7 +23,7 @@ const MessagesHomePage_View = ({ loading, userMessages, newMessage }) => {
     return (
       <MessagePageContainer>
         {userMessages.map(message => (
-          <Link key={message._id} to={`/messages/${message.id}`}>
+          <Link key={message._id} to={`/messages/${message._id}`}>
             <MessageGroupItem position="relative">
               <UserProfilePicture
                 src={
