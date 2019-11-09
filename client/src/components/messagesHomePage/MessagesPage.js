@@ -26,15 +26,21 @@ const MessagesPage = props => {
   }, []);
   useEffect(() => {
     let message = [];
-    const fetchData = async () => {
-      message = await axios.get("/users/getUserMessages");
+    let messageGroupDetailsArray = [];
+    const fetchMessages = async () => {
+      const res = await axios.get(`/users/getUserMessages?id=${user.id}`);
+      message = res.data.messages;
+      if (message.length > 0) {
+        messageGroupDetailsArray = message.filter(
+          message => message._id === props.match.params.id
+        );
+      }
+      if (!messageGroupDetailsArray[0] && user.id) {
+        return props.history.push("/messages");
+      }
+      setMessageGroupDetails(messageGroupDetailsArray[0]);
     };
-    if (user.messages) {
-      message = user.messages.filter(
-        message => message._id === props.match.params.id
-      );
-    }
-    setMessageGroupDetails(message[0]);
+    fetchMessages();
   }, [user]);
   useEffect(() => {
     if (messageGroupDetails) {
@@ -42,7 +48,7 @@ const MessagesPage = props => {
         userId: user.id,
         connectedUserId: messageGroupDetails.id
       });
-      if (messageGroupDetails._id)
+      if (messageGroupDetails._id && messageGroupDetails.messagesList > 0)
         axios.post("/users/updateReadMessages", {
           groupId: messageGroupDetails._id,
           userId: user.id

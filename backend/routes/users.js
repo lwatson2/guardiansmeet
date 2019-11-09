@@ -318,13 +318,23 @@ router.post("/createMessageGroup", verifyToken, async (req, res) => {
 router.post("/acceptMatchRequest", verifyToken, async (req, res) => {
   const { user, requestedUser } = req.body;
   const userProfile = await User.findOne({ _id: user.id });
-
+  console.log(requestedUser);
   userProfile.matched.forEach(match => {
     if (match.username === requestedUser.username) {
       match.accepted === true;
     }
   });
-  await userProfile.save();
+  const requestedUserProfile = await User.findOne({
+    username: requestedUser.username
+  });
+
+  requestedUserProfile.sentMatches.forEach(match => {
+    if (match.username === user.username) {
+      match.accepted === true;
+    }
+  });
+
+  await requestedUserProfile.save();
   res.sendStatus(200);
 });
 router.get("/getUserMessages", async (req, res) => {

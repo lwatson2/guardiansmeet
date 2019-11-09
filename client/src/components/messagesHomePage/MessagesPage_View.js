@@ -14,7 +14,8 @@ import {
   MessageTimeStamp,
   MessageDetailsContinaer,
   BackArrowContainer,
-  BackContainerUsername
+  BackContainerUsername,
+  NoMessageText
 } from "./MessagesPage_Styles";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -77,6 +78,11 @@ const MessagesPage_View = ({
               </MessageDetailsContinaer>
             </MessagesItemContainer>
           ))}
+        {messagesList.length <= 0 && (
+          <NoMessageText>
+            Send your first message to {messageGroupDetails.name}!
+          </NoMessageText>
+        )}
       </MessagesContainer>
       <InputBottomOfPageContainer>
         <form onSubmit={handleSubmit}>

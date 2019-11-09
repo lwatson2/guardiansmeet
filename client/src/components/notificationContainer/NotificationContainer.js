@@ -53,7 +53,6 @@ const NotificationContainer = props => {
     }
     let groupIdsSet = new Set();
     if (user.messages) {
-      console.log(user.messages);
       user.messages.forEach(message => {
         message.messagesList.map(messageItem => {
           if (messageItem.viewed === false) {

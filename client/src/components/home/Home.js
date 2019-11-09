@@ -1,13 +1,10 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
-import styled from "styled-components";
-import ProfileCard from "../profileCard/ProfileCard";
 import axios from "axios";
 import useOnScreen from "../helpers/useInfiniteScroll";
-import { device } from "../helpers/mediaQueries";
 import Cookies from "js-cookie";
 import io from "socket.io-client";
 import { UserContext } from "../context/UserContext";
-
+import Home_View from "./Home_View";
 const Home = props => {
   const [userList, setUserList] = useState([]);
   const [userCount, setuserCount] = useState(0);
@@ -86,44 +83,14 @@ const Home = props => {
   };
 
   return (
-    <UserListContainer>
-      {userList.map(userItem => (
-        <ProfileCardContainer>
-          <ProfileCard
-            handleChat={handleChat}
-            user={userItem}
-            showChatBtn={true}
-            loggedInUser={user}
-          />
-        </ProfileCardContainer>
-      ))}
-      <LoadingContainer
-        opactiy={userList.length >= userCount && onScreen ? "0" : "1"}
-        ref={ref}
-      >
-        Loading
-      </LoadingContainer>
-    </UserListContainer>
+    <Home_View
+      userCount={userCount}
+      userList={userList}
+      user={user}
+      onScreen={onScreen}
+      ref={ref}
+    />
   );
 };
 
-const UserListContainer = styled.section`
-  height: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  justify-items: center;
-  align-items: center;
-  grid-gap: 30px;
-  margin-top: 50px;
-  @media ${device.tablet} {
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  }
-`;
-const ProfileCardContainer = styled.div`
-  margin: 50px 0;
-`;
-const LoadingContainer = styled.div`
-  opacity: 0;
-  align-self: end;
-`;
 export default Home;

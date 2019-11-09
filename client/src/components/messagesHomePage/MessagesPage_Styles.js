@@ -70,6 +70,11 @@ export const MessageTimeStamp = styled.p`
   padding-top: 5px;
   font-size: 12px;
 `;
+export const NoMessageText = styled.p`
+  align-self: center;
+  padding-top: 10px;
+  color: hsl(264, 82%, 60%);
+`;
 export const InputBottomOfPageContainer = styled.div`
   position: absolute;
   bottom: 10px;

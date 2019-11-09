@@ -6,11 +6,14 @@ import Cookies from "js-cookie";
 
 const ProfileCard = ({ user, handleChat, showChatBtn, loggedInUser }) => {
   const [showMatchedCheck, setshowMatchedCheck] = useState(false);
+  const [showAcceptedMessage, setShowAcceptedMessage] = useState(false);
   useEffect(() => {
     if (loggedInUser && loggedInUser.sentMatches) {
       loggedInUser.sentMatches.forEach(matches => {
-        if (matches.id === user._id) {
+        if (matches.id === user._id && matches.accepted === false) {
           setshowMatchedCheck(true);
+        } else if (matches.id === user._id && matches.accepted === true) {
+          setShowAcceptedMessage(true);
         }
       });
     }
@@ -35,9 +38,9 @@ const ProfileCard = ({ user, handleChat, showChatBtn, loggedInUser }) => {
           {user.bio && <UserBio>{user.bio}</UserBio>}
           {Cookies.get("token") && showChatBtn && (
             <ConnectBtnContainer>
-              {showMatchedCheck ? (
-                <ConnectBtn>Waiting</ConnectBtn>
-              ) : (
+              {showMatchedCheck && <ConnectBtn>Waiting</ConnectBtn>}
+              {showAcceptedMessage && <ConnectBtn>Accepted</ConnectBtn>}
+              {!showMatchedCheck && !showAcceptedMessage && (
                 <ConnectBtn onClick={() => handleChat(user)}>Chat</ConnectBtn>
               )}
             </ConnectBtnContainer>
