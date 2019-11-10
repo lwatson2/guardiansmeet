@@ -61,7 +61,7 @@ router.get("/userList", async (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-  const { name, password, age, preference, bio, username } = req.body;
+  const { name, password, age, preference, bio, username, gender } = req.body;
   const { file } = req.files;
   let profilePicture;
   // Checks if name already exists
@@ -95,7 +95,8 @@ router.post("/register", async (req, res) => {
       preference,
       age,
       profilePicture,
-      username
+      username,
+      gender
     });
     //Create a salt of the password to replace the plain text password to save to the database
     bcrypt.genSalt(saltRounds, (err, salt) => {
@@ -239,6 +240,7 @@ router.get("/fetchusers", async (req, res) => {
   let username = req.query.username;
   let users;
   let matchedIds = [];
+  let sentMatchesIds = [];
   offset = parseInt(offset);
   if (username) {
     const user = await User.findOne({ username: username });
@@ -247,19 +249,24 @@ router.get("/fetchusers", async (req, res) => {
         matchedIds.push(match.id);
       });
     }
+    if (user.sentMatches) {
+      user.sentMatches.forEach(sentMatch => {
+        sentMatchesIds.push(sentMatch.id);
+      });
+    }
     users = await User.find(
       {
         username: { $ne: username },
-        _id: { $nin: matchedIds }
+        _id: { $nin: [matchedIds, sentMatchesIds] }
       },
       { password: 0 }
     )
       .skip(offset)
-      .limit(2);
+      .limit(6);
   } else {
     users = await User.find({}, { password: 0 })
       .skip(offset)
-      .limit(2);
+      .limit(6);
   }
   res.json({ users });
 });

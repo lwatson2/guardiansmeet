@@ -4,7 +4,13 @@ import useOnScreen from "../helpers/useInfiniteScroll";
 import Cookies from "js-cookie";
 import io from "socket.io-client";
 import { UserContext } from "../context/UserContext";
-import Home_View from "./Home_View";
+import {
+  UserListContainer,
+  ProfileCardContainer,
+  LoadingContainer
+} from "./Home_Styles";
+import ProfileCard from "../profileCard/ProfileCard";
+
 const Home = props => {
   const [userList, setUserList] = useState([]);
   const [userCount, setuserCount] = useState(0);
@@ -39,7 +45,7 @@ const Home = props => {
     }
     //Checks to make sure user is at bottom of page and that the userList array is contains items
     if (onScreen && userList.length > 0 && userList.length <= userCount) {
-      const offsetUserQuery = offset + 2;
+      const offsetUserQuery = offset + 6;
       let newUserList = [];
       let res;
       const fetchUserList = async () => {
@@ -83,13 +89,24 @@ const Home = props => {
   };
 
   return (
-    <Home_View
-      userCount={userCount}
-      userList={userList}
-      user={user}
-      onScreen={onScreen}
-      ref={ref}
-    />
+    <UserListContainer>
+      {userList.map(userItem => (
+        <ProfileCardContainer key={userItem._id}>
+          <ProfileCard
+            user={userItem}
+            handleChat={handleChat}
+            showChatBtn={true}
+            loggedInUser={user}
+          />
+        </ProfileCardContainer>
+      ))}
+      <LoadingContainer
+        opactiy={userList.length >= userCount && onScreen ? "0" : "1"}
+        ref={ref}
+      >
+        Loading
+      </LoadingContainer>
+    </UserListContainer>
   );
 };
 

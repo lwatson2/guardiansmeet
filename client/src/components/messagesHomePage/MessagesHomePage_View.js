@@ -14,10 +14,11 @@ import {
 } from "./MessagesHomePage_Styles";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Loading } from "../loadingComponent/Loading";
 
 const MessagesHomePage_View = ({ loading, userMessages, newMessage }) => {
   if (loading) {
-    return <div>Loading....</div>;
+    return <Loading />;
   }
   if (!loading && userMessages.length > 0) {
     return (

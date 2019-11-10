@@ -35,6 +35,7 @@ const userSchema = new mongoose.Schema({
   preference: { type: String },
   bio: { type: String },
   profilePicture: { type: String },
+  gender: { type: String },
   messages: { type: [messageGroupSchema], default: undefined },
   matched: { type: [matchedSchema], default: undefined },
   sentMatches: { type: [sentMatchesSchema], default: undefined }

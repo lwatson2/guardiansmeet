@@ -5,10 +5,6 @@ export const MessagesPageContainer = styled.section`
   background: hsl(209, 16%, 82%);
   position: relative;
   height: calc(100vh - 45px);
-  @media ${device.tablet} {
-    height: calc(100vh - 55px);
-    padding-top: 10px;
-  }
 `;
 export const MessagesContainer = styled.div`
   display: flex;
@@ -25,6 +21,9 @@ export const BackArrowContainer = styled.div`
   color: hsl(216, 24%, 16%);
   margin-bottom: 5px;
   box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.2);
+  @media ${device.tablet} {
+    padding-top: 5px;
+  }
 `;
 export const BackContainerUsername = styled.h3`
   padding-left: 10px;
