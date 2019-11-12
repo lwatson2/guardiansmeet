@@ -14,6 +14,7 @@ const MessagesPage = props => {
   const [socketRoom, setsocketRoom] = useState();
   const { socket } = props;
   const [newMessage, setNewMessage] = useContext(NewMessageContext);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setNewMessage({ viewed: true, groupId: [] });
@@ -27,7 +28,9 @@ const MessagesPage = props => {
   useEffect(() => {
     let message = [];
     let messageGroupDetailsArray = [];
+    setLoading(true);
     const fetchMessages = async () => {
+      console.log("f");
       const res = await axios.get(`/users/getUserMessages?id=${user.id}`);
       message = res.data.messages;
       if (message.length > 0) {
@@ -40,7 +43,9 @@ const MessagesPage = props => {
       }
       setMessageGroupDetails(messageGroupDetailsArray[0]);
     };
-    fetchMessages();
+    if (user.id) {
+      fetchMessages();
+    }
   }, [user]);
   useEffect(() => {
     if (messageGroupDetails) {
@@ -56,6 +61,7 @@ const MessagesPage = props => {
     }
     if (messageGroupDetails && messageGroupDetails.messagesList) {
       setMessagesList(messageGroupDetails.messagesList);
+      setLoading(false);
     }
     return () => {};
   }, [messageGroupDetails]);
@@ -101,6 +107,7 @@ const MessagesPage = props => {
       user={user}
       errors={errors}
       values={values}
+      loading={loading}
       handleChange={handleChange}
       handleSubmit={handleSubmit}
       messagesList={messagesList}

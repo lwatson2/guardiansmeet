@@ -239,25 +239,24 @@ router.get("/fetchusers", async (req, res) => {
   let offset = req.query.offset;
   let username = req.query.username;
   let users;
-  let matchedIds = [];
-  let sentMatchesIds = [];
+  let matchesIds = [];
   offset = parseInt(offset);
   if (username) {
     const user = await User.findOne({ username: username });
     if (user.matched) {
       user.matched.forEach(match => {
-        matchedIds.push(match.id);
+        matchesIds.push(match.id);
       });
     }
     if (user.sentMatches) {
       user.sentMatches.forEach(sentMatch => {
-        sentMatchesIds.push(sentMatch.id);
+        matchesIds.push(sentMatch.id);
       });
     }
     users = await User.find(
       {
         username: { $ne: username },
-        _id: { $nin: [matchedIds, sentMatchesIds] }
+        _id: { $nin: matchesIds }
       },
       { password: 0 }
     )

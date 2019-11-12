@@ -20,6 +20,7 @@ import {
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Scroll from "react-scroll";
+import { Loading } from "../loadingComponent/Loading";
 
 const MessagesPage_View = ({
   user,
@@ -28,7 +29,8 @@ const MessagesPage_View = ({
   values,
   handleChange,
   handleSubmit,
-  messageGroupDetails
+  messageGroupDetails,
+  loading
 }) => {
   var animateScroll = Scroll.animateScroll;
 
@@ -38,7 +40,13 @@ const MessagesPage_View = ({
       behavior: "smooth"
     });
   }, [messagesList]);
-
+  if (loading) {
+    return (
+      <MessagesPageContainer>
+        <Loading />
+      </MessagesPageContainer>
+    );
+  }
   return (
     <MessagesPageContainer>
       {messageGroupDetails && (

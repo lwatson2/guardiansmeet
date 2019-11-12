@@ -1,5 +1,6 @@
 const validate = values => {
   const choices = ["Male", "Female", "Both", "Other"];
+  const genders = ["Male", "Female"];
   const errors = {};
   if (values.profilePic && values.profilePic.size > 200000) {
     errors.profilePicture = "Please limit profile pictures to 200kb";
@@ -36,6 +37,12 @@ const validate = values => {
   }
   if (values.preference && !choices.includes(values.preference)) {
     errors.preference = "Please choose a preference";
+  }
+  if (values.gender === "") {
+    errors.gender = "Please choose a gender.";
+  }
+  if (values.gender && !genders.includes(values.gender)) {
+    errors.gender = "Please choose a gender";
   }
   if (!values.age) {
     errors.age = "Select a age";
