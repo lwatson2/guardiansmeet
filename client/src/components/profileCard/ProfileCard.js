@@ -55,21 +55,18 @@ export default ProfileCard;
 
 const UserProfileContainer = styled.div`
   background: hsl(213, 16%, 82%);
-  width: 280px;
+  width: 300px;
   height: 280px;
   position: relative;
   display: flex;
   justify-content: center;
   border-radius: 10px;
   box-shadow: 0 15px 30px hsla(0, 0%, 0%, 0.2);
-  @media ${device.tablet} {
-    width: 392px;
-  }
 `;
 const UserImageContainer = styled.div`
   height: 100px;
   position: absolute;
-  bottom: 231px;
+  bottom: 230px;
   border-radius: 100%;
   border: 2px solid hsl(262, 100%, 78%);
   background-color: hsl(0, 0%, 91%);

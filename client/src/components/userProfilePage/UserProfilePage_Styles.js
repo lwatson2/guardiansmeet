@@ -41,12 +41,18 @@ export const FormItemLabel = styled.label`
 `;
 export const FormItemInput = styled.input`
   padding-left: 5px;
-  border: none;
+  border: 1px;
   border-radius: 4px;
   height: 31px;
   background: hsl(211, 12%, 42%);
   color: hsl(216, 33%, 97%);
   box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.25);
+  transition: all 0.5s ease;
+  :focus {
+    border: 1px solid hsl(211, 15%, 91%);
+    background: hsl(209, 13%, 29%);
+    box-shadow: none;
+  }
 `;
 export const FormItemTextArea = styled.textarea`
   padding-top: 5px;
@@ -57,6 +63,12 @@ export const FormItemTextArea = styled.textarea`
   color: hsl(216, 33%, 97%);
   box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.25);
   resize: none;
+  transition: all 0.5s ease;
+  :focus {
+    border: 1px solid hsl(211, 15%, 91%);
+    background: hsl(209, 13%, 29%);
+    box-shadow: none;
+  }
 `;
 
 // router.post("/updateUsers", async(req, res) => {
