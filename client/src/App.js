@@ -17,6 +17,7 @@ import NotificationContainer from "./components/notificationContainer/Notificati
 import io from "socket.io-client";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faArrowLeft, faExclamation } from "@fortawesome/free-solid-svg-icons";
+import { UserProfilePage } from "./components/userProfilePage/UserProfilePage";
 
 library.add(faArrowLeft, faExclamation);
 
@@ -72,6 +73,11 @@ const App = () => {
                   path="/messages/:id"
                   component={MessagesPage}
                   socket={socket}
+                />
+                <ProtectedRoute
+                  exact
+                  path="/my-profile"
+                  component={UserProfilePage}
                 />
               </Switch>{" "}
               <ToastContainer

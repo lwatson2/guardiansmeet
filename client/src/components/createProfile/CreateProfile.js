@@ -3,7 +3,6 @@ import useForm from "../helpers/FormHelper";
 import validate from "../helpers/CreateProfileRules";
 import axios from "axios";
 import CreateProfile_View from "./CreateProfile_View";
-import { ProfilePicture } from "./CreateProfile_Styles";
 
 const CreateProfile = props => {
   const [errorMessage, setErrorMessage] = useState("");

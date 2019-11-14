@@ -56,7 +56,9 @@ const NavBar_View = ({
               </NewMessageNotificationIcon>
             )}
           </Link>
-          <NavListItem onClick={() => setShowNav(false)}>Profile</NavListItem>
+          <Link to="my-profile">
+            <NavListItem onClick={() => setShowNav(false)}>Profile</NavListItem>
+          </Link>
           <NavListItem onClick={() => logout()}>Logout</NavListItem>
         </NavItems>
       ) : (
