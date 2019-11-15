@@ -7,22 +7,31 @@ export const UserProfilePageContainer = styled.section`
     align-items: center;
   }
 `;
-
 export const UserProfileComponentContainer = styled.div`
   width: 300px;
   height: 650px;
+  display: flex;
   background: hsl(210, 20%, 25%);
   border-radius: 10px;
-  display: grid;
   margin: 40px 0;
-  justify-items: center;
-  grid-template-rows: repeat(5, auto);
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   @media ${device.tablet} {
+    display: grid;
     grid-template-rows: repeat(3, 1fr);
     grid-template-columns: repeat(2, 1fr);
     height: 500px;
     width: 500px;
+    justify-items: center;
   }
+`;
+export const ProfilePictureSelectContainer = styled.div``;
+export const ProfilePictureSelectLabel = styled.label`
+  cursor: pointer;
+`;
+export const ProfilePictureSelectInput = styled.input`
+  display: none;
 `;
 export const FormItemContainer = styled.div`
   grid-column: ${props => props.column};
@@ -63,14 +72,34 @@ export const FormItemTextArea = styled.textarea`
   color: hsl(216, 33%, 97%);
   box-shadow: 0 4px 6px hsla(0, 0%, 0%, 0.25);
   resize: none;
+  width: 250px;
   transition: all 0.5s ease;
   :focus {
     border: 1px solid hsl(211, 15%, 91%);
     background: hsl(209, 13%, 29%);
     box-shadow: none;
   }
+  @media ${device.tablet} {
+    width: auto;
+  }
 `;
-
+export const UpdateProfileButton = styled.button`
+  justify-self: end;
+  grid-column: 2;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  background: hsl(262, 82%, 60%);
+  border: none;
+  height: 30px;
+  width: 100px;
+  border-radius: 10px;
+  color: hsl(216, 33%, 97%);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  :hover {
+    transform: translateY(-3px);
+  }
+`;
 // router.post("/updateUsers", async(req, res) => {
 //     const {name, profilePic, bio, user}= req.body
 //     const userProfile = await User.findOne({_id: user.id})

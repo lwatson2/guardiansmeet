@@ -2,10 +2,14 @@ import React from "react";
 import {
   UserProfilePageContainer,
   UserProfileComponentContainer,
+  ProfilePictureSelectContainer,
+  ProfilePictureSelectLabel,
+  ProfilePictureSelectInput,
   FormItemContainer,
   FormItemLabel,
   FormItemInput,
-  FormItemTextArea
+  FormItemTextArea,
+  UpdateProfileButton
 } from "./UserProfilePage_Styles";
 import {
   ProfilePictureContainer,
@@ -37,6 +41,18 @@ export const UserProfilePage_View = ({
                 }
               />
             </ProfilePictureCirlceContainer>
+            <ProfilePictureSelectContainer>
+              <ProfilePictureSelectLabel htmlFor="profilePicture">
+                Click to update profile picture
+              </ProfilePictureSelectLabel>
+              <ProfilePictureSelectInput
+                type="file"
+                onChange={handleProfilePicture}
+                id="profilePicture"
+                name="profilePicture"
+                accept=".jpg, .png, .jpeg,"
+              />
+            </ProfilePictureSelectContainer>
           </ProfilePictureContainer>
           <FormItemContainer>
             <FormItemLabel htmlFor="name">Name</FormItemLabel>
@@ -70,6 +86,7 @@ export const UserProfilePage_View = ({
               value={values.bio || ""}
             />
           </FormItemContainer>
+          <UpdateProfileButton>Save</UpdateProfileButton>
         </UserProfileComponentContainer>
       </form>
     </UserProfilePageContainer>

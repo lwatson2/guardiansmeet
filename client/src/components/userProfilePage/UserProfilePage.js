@@ -24,7 +24,11 @@ export const UserProfilePage = () => {
       setCurrentProfilePicture();
     };
   }, [user]);
-  const handleProfilePicture = () => {};
+
+  const handleProfilePicture = event => {
+    handleChange(event);
+    setCurrentProfilePicture(URL.createObjectURL(event.target.files[0]));
+  };
   return (
     <UserProfilePage_View
       user={user}
