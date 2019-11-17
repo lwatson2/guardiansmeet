@@ -30,7 +30,8 @@ const MessagesPage_View = ({
   handleChange,
   handleSubmit,
   messageGroupDetails,
-  loading
+  loading,
+  currentUserProfilePicture
 }) => {
   var animateScroll = Scroll.animateScroll;
 
@@ -74,8 +75,8 @@ const MessagesPage_View = ({
               {user.id !== message.sender.id && (
                 <UserProfilePicture
                   src={
-                    message.sender.profilePicture
-                      ? message.sender.profilePicture
+                    currentUserProfilePicture.profilePic
+                      ? currentUserProfilePicture.profilePic
                       : ProfilePicPlaceHolder
                   }
                 />

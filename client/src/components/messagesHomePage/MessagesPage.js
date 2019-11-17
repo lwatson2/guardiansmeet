@@ -15,6 +15,9 @@ const MessagesPage = props => {
   const { socket } = props;
   const [newMessage, setNewMessage] = useContext(NewMessageContext);
   const [loading, setLoading] = useState(false);
+  const [currentUserProfilePicture, setCurrentUserProfilePicture] = useState(
+    {}
+  );
 
   useEffect(() => {
     setNewMessage({ viewed: true, groupId: [] });
@@ -43,8 +46,9 @@ const MessagesPage = props => {
       if (messageGroupDetailsArray.profilePicture) {
         console.log(messageGroupDetailsArray.id);
         let response = await axios.get(
-          `users/getUserProfilePicture?id=${messageGroupDetailsArray.id}`
+          `/users/getUserProfilePicture?id=${messageGroupDetailsArray.id}`
         );
+        setCurrentUserProfilePicture(response.data);
       }
       setMessageGroupDetails(messageGroupDetailsArray);
     };
@@ -117,6 +121,7 @@ const MessagesPage = props => {
       handleSubmit={handleSubmit}
       messagesList={messagesList}
       messageGroupDetails={messageGroupDetails}
+      currentUserProfilePicture={currentUserProfilePicture}
     />
   );
 };

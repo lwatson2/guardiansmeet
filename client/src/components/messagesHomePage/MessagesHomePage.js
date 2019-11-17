@@ -29,7 +29,7 @@ const MessagesHomePage = () => {
         await Promise.all(
           res.data.messages.map(async message => {
             let response = await axios.get(
-              `users/getUserProfilePicture?id=${message.id}`
+              `/users/getUserProfilePicture?id=${message.id}`
             );
 
             return (message.profilePic = response.data.profilePic);
