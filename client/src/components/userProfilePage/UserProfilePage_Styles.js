@@ -19,9 +19,9 @@ export const UserProfileComponentContainer = styled.div`
   align-items: center;
   @media ${device.tablet} {
     display: grid;
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
     grid-template-columns: repeat(2, 1fr);
-    height: 500px;
+    height: 550px;
     width: 500px;
     justify-items: center;
   }
@@ -39,7 +39,6 @@ export const FormItemContainer = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  height: 104px;
   width: auto;
   align-items: center;
   color: hsl(216, 33%, 97%);
@@ -85,9 +84,11 @@ export const FormItemTextArea = styled.textarea`
 `;
 export const UpdateProfileButton = styled.button`
   justify-self: end;
+  align-self: end;
   grid-column: 2;
   margin-right: 10px;
   margin-bottom: 10px;
+  margin-left: auto;
   background: hsl(262, 82%, 60%);
   border: none;
   height: 30px;

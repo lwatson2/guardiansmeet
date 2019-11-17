@@ -14,7 +14,9 @@ import {
 import {
   ProfilePictureContainer,
   ProfilePictureCirlceContainer,
-  ProfilePicture
+  ProfilePicture,
+  ErrorMessageContainer,
+  ErrorMessage
 } from "../createProfile/CreateProfile_Styles";
 import ProfilePicPlaceHolder from "../../images/Portrait_placeholder.png";
 
@@ -29,7 +31,7 @@ export const UserProfilePage_View = ({
 }) => {
   return (
     <UserProfilePageContainer>
-      <form>
+      <form onSubmit={handleSubmit}>
         <UserProfileComponentContainer>
           <ProfilePictureContainer>
             <ProfilePictureCirlceContainer>
@@ -53,6 +55,11 @@ export const UserProfilePage_View = ({
                 accept=".jpg, .png, .jpeg,"
               />
             </ProfilePictureSelectContainer>
+            {errors.profilePicture && (
+              <ErrorMessageContainer>
+                <ErrorMessage>{errors.profilePicture}</ErrorMessage>
+              </ErrorMessageContainer>
+            )}
           </ProfilePictureContainer>
           <FormItemContainer>
             <FormItemLabel htmlFor="name">Name</FormItemLabel>
@@ -63,6 +70,11 @@ export const UserProfilePage_View = ({
               onChange={handleChange}
               value={values.name || ""}
             />
+            {errors.name && (
+              <ErrorMessageContainer>
+                <ErrorMessage>{errors.name}</ErrorMessage>
+              </ErrorMessageContainer>
+            )}
           </FormItemContainer>
           <FormItemContainer>
             <FormItemLabel htmlFor="username">Username</FormItemLabel>
@@ -73,6 +85,11 @@ export const UserProfilePage_View = ({
               id="username"
               value={values.username || ""}
             />
+            {errors.username && (
+              <ErrorMessageContainer>
+                <ErrorMessage>{errors.username}</ErrorMessage>
+              </ErrorMessageContainer>
+            )}
           </FormItemContainer>
           <FormItemContainer column="1 / -1">
             <FormItemLabel htmlFor="bio">Bio</FormItemLabel>
@@ -85,6 +102,11 @@ export const UserProfilePage_View = ({
               onChange={handleChange}
               value={values.bio || ""}
             />
+            {errors.bio && (
+              <ErrorMessageContainer>
+                <ErrorMessage>{errors.bio}</ErrorMessage>
+              </ErrorMessageContainer>
+            )}
           </FormItemContainer>
           <UpdateProfileButton>Save</UpdateProfileButton>
         </UserProfileComponentContainer>

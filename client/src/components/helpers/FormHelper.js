@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "../context/UserContext";
 const useForm = (callback, validate) => {
+  const [user] = useContext(UserContext);
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
+    console.log(errors);
     // Checks to make sure errors object is empty and isSubmitting is true
     if (Object.keys(errors).length === 0 && isSubmitting) {
       callback(setValues);
@@ -13,7 +16,7 @@ const useForm = (callback, validate) => {
   const handleSubmit = event => {
     if (event) event.preventDefault();
     setIsSubmitting(true);
-    setErrors(validate(values));
+    setErrors(validate(values, user));
   };
 
   const handleChange = event => {

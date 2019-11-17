@@ -208,7 +208,7 @@ export const ProfileSubmitBtn = styled.button`
 `;
 export const ErrorMessageContainer = styled.div`
   background: hsla(0, 100%, 80%, 1);
-  margin-top: 5px;
+  margin: 5px 0;
   font-size: 13px;
   height: 30px;
   display: flex;
