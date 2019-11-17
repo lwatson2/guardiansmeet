@@ -2,7 +2,7 @@ const validate = values => {
   const choices = ["Male", "Female", "Both", "Other"];
   const genders = ["Male", "Female"];
   const errors = {};
-  if (values.profilePic && values.profilePic.size > 200000) {
+  if (values.profilePicture && values.profilePicture.size > 200000) {
     errors.profilePicture = "Please limit profile pictures to 200kb";
   }
   if (!values.name) {

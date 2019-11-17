@@ -24,7 +24,7 @@ const CreateProfile = props => {
       values.bio = "";
     }
     let formData = new FormData();
-    formData.append("file", values.profilePic);
+    formData.append("file", values.profilePicture);
     formData.append("name", values.name);
     formData.append("password", values.password);
     formData.append("preference", values.preference);

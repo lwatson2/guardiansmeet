@@ -10,26 +10,27 @@ export const UserProfilePage = props => {
   const [currentProfilePicture, setCurrentProfilePicture] = useState();
 
   const handleUpdate = async setValues => {
+    let formData = new FormData();
     values.name = values.name.trim();
     if (values.bio) {
       values.bio = values.bio.replace(/[\r\n]+/g, " ");
     }
-
-    let formData = new FormData();
-    formData.append("file", values.profilePicture);
-    formData.append("name", values.name);
-    formData.append("bio", values.bio);
-    formData.append("username", values.username);
+    Object.keys(values).forEach(value => {
+      if (values[value] !== user[value]) {
+        formData.append(`${value}`, values[value]);
+      }
+    });
+    formData.append("currentProfilePicture", user.profilePicture);
     const res = await axios.post(
-      `/users/updateProfile?id=${user.id}`,
+      `/users/updateProfile?id=${user.id}&currentProfilePicture=${user.profilePicture}`,
       formData
     );
-    if (res.data.err) {
-      return (errors = res.data.msg);
-    }
+    // if (res.data.err) {
+    //   return (errors = res.data.msg);
+    // }
 
-    setValues({});
-    props.history.push("/my-profile");
+    // setValues({});
+    // props.history.push("/my-profile");
   };
   const { values, handleChange, handleSubmit, errors } = useForm(
     handleUpdate,

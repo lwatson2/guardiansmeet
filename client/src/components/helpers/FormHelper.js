@@ -24,7 +24,7 @@ const useForm = (callback, validate) => {
     if (event.target.name === "profilePicture") {
       setValues(values => ({
         ...values,
-        profilePic: event.target.files[0]
+        profilePicture: event.target.files[0]
       }));
     } else {
       setValues(values => ({

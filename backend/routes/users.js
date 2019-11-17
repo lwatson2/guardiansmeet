@@ -403,6 +403,35 @@ router.post("/updateReadMessages", async (req, res) => {
   });
   user.save();
 });
+
+router.post("/updateProfile", async (req, res) => {
+  let url;
+  const { id, currentProfilePicture } = req.query;
+  if (req.files.profilePicture) {
+    url = currentProfilePicture.match(/([^\/]+)\.\w+$/)[1];
+    console.log(url);
+    await cloudinary.uploader.destroy(url, { resource_type: "image" }, function(
+      err,
+      res
+    ) {
+      console.log(err, res);
+    });
+  }
+  if (req.files.profilePicture) {
+    await cloudinary.uploader.upload(
+      req.files.profilePicture.path,
+      {
+        transformation: [
+          { width: 400, height: 400, radius: "max", crop: "crop" }
+        ]
+      },
+      (err, image) => {
+        req.body.profilePicture = image.url;
+      }
+    );
+  }
+  await User.findOneAndUpdate({ _id: ObjectId(id) }, req.body);
+});
 router.get("/logout", (req, res) => {
   req.logOut();
   res.sendStatus(200);
