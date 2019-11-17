@@ -30,18 +30,23 @@ const MessagesPage = props => {
     let messageGroupDetailsArray = [];
     setLoading(true);
     const fetchMessages = async () => {
-      console.log("f");
       const res = await axios.get(`/users/getUserMessages?id=${user.id}`);
       message = res.data.messages;
       if (message.length > 0) {
         messageGroupDetailsArray = message.filter(
           message => message._id === props.match.params.id
-        );
+        )[0];
       }
-      if (!messageGroupDetailsArray[0] && user.id) {
+      if (!messageGroupDetailsArray && user.id) {
         return props.history.push("/messages");
       }
-      setMessageGroupDetails(messageGroupDetailsArray[0]);
+      if (messageGroupDetailsArray.profilePicture) {
+        console.log(messageGroupDetailsArray.id);
+        let response = await axios.get(
+          `users/getUserProfilePicture?id=${messageGroupDetailsArray.id}`
+        );
+      }
+      setMessageGroupDetails(messageGroupDetailsArray);
     };
     if (user.id) {
       fetchMessages();

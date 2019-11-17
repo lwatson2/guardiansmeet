@@ -12,6 +12,7 @@ const MessagesHomePage = () => {
   const [userMessages, setUserMessages] = useState();
   const [loading, setLoading] = useState(true);
   const [newMessage, setNewMessage] = useContext(NewMessageContext);
+  const [messageProfilePicture, setMessageProfilePicture] = useState([]);
 
   let config = {
     headers: { Authorization: "Bearer " + token }
@@ -25,12 +26,37 @@ const MessagesHomePage = () => {
           `/users/getUserMessages?id=${user.id}`,
           config
         );
+        await Promise.all(
+          res.data.messages.map(async message => {
+            let response = await axios.get(
+              `users/getUserProfilePicture?id=${message.id}`
+            );
+
+            return (message.profilePic = response.data.profilePic);
+          })
+        );
         setUserMessages(res.data.messages);
         setLoading(false);
       }
     };
     fetchUserMessages();
   }, [user]);
+  // useEffect(() => {
+  //   let messageGroupList = userMessages;
+  //   const fetchProfilePicture = async () => {
+  //     const promises = await messageGroupList.map(async message => {
+  //       let res = await axios.get(
+  //         `users/getUserProfilePicture?id=${message.id}`
+  //       );
+
+  //       message.profilePicture = res.data.profilePic;
+  //     });
+  //     setUserMessages(messageGroupList);
+  //   };
+  //   if (messageGroupList && messageGroupList.length > 0) {
+  //     fetchProfilePicture();
+  //   }
+  // }, [userMessages]);
   return (
     <MessageHomePage_View
       newMessage={newMessage}

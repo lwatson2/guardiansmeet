@@ -404,6 +404,14 @@ router.post("/updateReadMessages", async (req, res) => {
   user.save();
 });
 
+router.get("/getUserProfilePicture", async (req, res) => {
+  const { id } = req.query;
+  console.log(id);
+  const user = await User.findOne({ _id: ObjectId(id) });
+  console.log(user);
+  // res.json({ profilePic: user.profilePicture, id });
+});
+
 router.post("/updateProfile", async (req, res) => {
   let url;
   const { id, currentProfilePicture } = req.query;
