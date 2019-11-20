@@ -29,6 +29,7 @@ export const UserProfileComponentContainer = styled.div`
 export const ProfilePictureSelectContainer = styled.div``;
 export const ProfilePictureSelectLabel = styled.label`
   cursor: pointer;
+  color: hsl(216, 33%, 97%);
 `;
 export const ProfilePictureSelectInput = styled.input`
   display: none;

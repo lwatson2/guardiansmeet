@@ -237,12 +237,12 @@ router.post("/setViewedMatched", verifyToken, async (req, res) => {
 });
 router.get("/fetchusers", async (req, res) => {
   let offset = req.query.offset;
-  let username = req.query.username;
+  let id = req.query.id;
   let users;
   let matchesIds = [];
   offset = parseInt(offset);
-  if (username) {
-    const user = await User.findOne({ username: username });
+  if (id) {
+    const user = await User.findOne({ _id: ObjectId(id) });
     if (user.matched) {
       user.matched.forEach(match => {
         matchesIds.push(match.id);
@@ -255,8 +255,7 @@ router.get("/fetchusers", async (req, res) => {
     }
     users = await User.find(
       {
-        username: { $ne: username },
-        _id: { $nin: matchesIds }
+        _id: { $nin: matchesIds, $ne: id }
       },
       { password: 0 }
     )
@@ -324,7 +323,6 @@ router.post("/createMessageGroup", verifyToken, async (req, res) => {
 router.post("/acceptMatchRequest", verifyToken, async (req, res) => {
   const { user, requestedUser } = req.body;
   const userProfile = await User.findOne({ _id: user.id });
-  console.log(requestedUser);
   userProfile.matched.forEach(match => {
     if (match.username === requestedUser.username) {
       match.accepted === true;
@@ -406,7 +404,6 @@ router.post("/updateReadMessages", async (req, res) => {
 
 router.get("/getUserProfilePicture", async (req, res) => {
   const { id } = req.query;
-  console.log(id);
   const user = await User.findOne({ _id: ObjectId(id) });
   res.json({ profilePic: user.profilePicture, id });
 });
@@ -416,7 +413,6 @@ router.post("/updateProfile", async (req, res) => {
   const { id, currentProfilePicture } = req.query;
   if (req.files.profilePicture) {
     url = currentProfilePicture.match(/([^\/]+)\.\w+$/)[1];
-    console.log(url);
     await cloudinary.uploader.destroy(url, { resource_type: "image" }, function(
       err,
       res
@@ -438,6 +434,7 @@ router.post("/updateProfile", async (req, res) => {
     );
   }
   await User.findOneAndUpdate({ _id: ObjectId(id) }, req.body);
+  res.sendStatus(200);
 });
 router.get("/logout", (req, res) => {
   req.logOut();

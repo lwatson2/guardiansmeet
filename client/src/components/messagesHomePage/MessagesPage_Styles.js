@@ -10,12 +10,12 @@ export const MessagesContainer = styled.div`
   display: flex;
   flex-direction: column;
   overflow: auto;
-  height: calc(100% - 120px);
+  height: calc(100% - 150px);
 `;
 export const BackArrowContainer = styled.div`
   display: flex;
   background: hsl(216, 33%, 97%);
-  height: 38px;
+  height: 50px;
   align-items: center;
   padding-left: 10px;
   color: hsl(216, 24%, 16%);

@@ -84,12 +84,12 @@ const UserDetails = styled.div`
   justify-items: center;
   margin-top: 52px;
   color: hsl(210, 24%, 16%);
+  padding: 10px;
 `;
 const UserNameContainer = styled.div`
   display: grid;
   grid-template-rows: repeat(2, 1fr);
   grid-gap: 5px;
-  padding: 10px;
 `;
 const UserName = styled.p`
   grid-row: 1;

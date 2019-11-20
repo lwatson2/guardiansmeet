@@ -25,12 +25,11 @@ export const UserProfilePage = props => {
       `/users/updateProfile?id=${user.id}&currentProfilePicture=${user.profilePicture}`,
       formData
     );
-    // if (res.data.err) {
-    //   return (errors = res.data.msg);
-    // }
-
-    // setValues({});
-    // props.history.push("/my-profile");
+    if (res.data.err) {
+      return (errors = res.data.msg);
+    }
+    setValues({});
+    props.history.push("/");
   };
   const { values, handleChange, handleSubmit, errors } = useForm(
     handleUpdate,

@@ -49,9 +49,9 @@ const Home = props => {
       let newUserList = [];
       let res;
       const fetchUserList = async () => {
-        if (user.username) {
+        if (user.id) {
           res = await axios.get(
-            `/users/fetchusers?offset=${offsetUserQuery}&username=${user.username}`
+            `/users/fetchusers?offset=${offsetUserQuery}&id=${user.id}`
           );
         } else {
           res = await axios.get(`/users/fetchusers?offset=${offsetUserQuery}`);
@@ -67,10 +67,8 @@ const Home = props => {
   // Fetches users on page load
   const fetchUsers = async () => {
     let res;
-    if (user.username) {
-      res = await axios.get(
-        `/users/fetchusers?offset=0&username=${user.username}`
-      );
+    if (user.id) {
+      res = await axios.get(`/users/fetchusers?offset=0&id=${user.id}`);
     } else {
       res = await axios.get(`/users/fetchusers?offset=0`);
     }
