@@ -12,7 +12,7 @@ const NotificationContainer = props => {
   const [userNotificationId, setUserNotificationId] = useState();
   const [currentUserUsername, setCurrentUserUsername] = useState();
   const [user] = useContext(UserContext);
-  const [newMessage, setNewMessage] = useContext(NewMessageContext);
+  const [setNewMessage] = useContext(NewMessageContext);
   const [showUser, setShowUser] = useState(false);
   const { socket } = props;
   const token = Cookies.get("token");
@@ -56,7 +56,7 @@ const NotificationContainer = props => {
       user.messages.forEach(message => {
         message.messagesList.map(messageItem => {
           if (messageItem.viewed === false) {
-            groupIdsSet.add(message._id);
+            return groupIdsSet.add(message._id);
           }
         });
       });
@@ -88,7 +88,7 @@ const NotificationContainer = props => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       const res = await axios.get(
-        `/users/fetchMatchedUserDetails?username=${userNotificationId}`,
+        `/users/fetchMatchedUserDetails?id=${userNotificationId}`,
         config
       );
       setrequestedUser(res.data.user);

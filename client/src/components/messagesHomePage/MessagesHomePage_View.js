@@ -17,7 +17,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Loading } from "../loadingComponent/Loading";
 
 const MessagesHomePage_View = ({ loading, userMessages, newMessage }) => {
-  console.log(userMessages);
   if (loading) {
     return <Loading />;
   }

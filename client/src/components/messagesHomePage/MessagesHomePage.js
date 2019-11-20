@@ -11,8 +11,7 @@ const MessagesHomePage = () => {
   const [user] = useContext(UserContext);
   const [userMessages, setUserMessages] = useState();
   const [loading, setLoading] = useState(true);
-  const [newMessage, setNewMessage] = useContext(NewMessageContext);
-  const [messageProfilePicture, setMessageProfilePicture] = useState([]);
+  const [newMessage] = useContext(NewMessageContext);
 
   let config = {
     headers: { Authorization: "Bearer " + token }

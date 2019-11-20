@@ -14,7 +14,7 @@ const validate = values => {
   if (values.name && values.name.length < 2) {
     errors.name = "Name must be greater than 2 characters.";
   }
-  if (values.name && !/^[a-zA-Z]*$/g.test(values.name)) {
+  if (values.name && !/[a-zA-Z]*/g.test(values.name)) {
     errors.name = "Invalid Characters";
   }
   if (!values.username) {

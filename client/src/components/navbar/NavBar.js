@@ -15,7 +15,7 @@ const NavBar = props => {
   );
   const token = Cookies.get("token");
   const [user, setUser] = useContext(UserContext);
-  const [newMessage, setNewMessage] = useContext(NewMessageContext);
+  const [newMessage] = useContext(NewMessageContext);
   let paramsUrlId;
   let urlsToConsiderforMessagesNotification = ["/login", "/"];
 

@@ -44,7 +44,6 @@ const MessagesPage = props => {
         return props.history.push("/messages");
       }
       if (messageGroupDetailsArray.profilePicture) {
-        console.log(messageGroupDetailsArray.id);
         let response = await axios.get(
           `/users/getUserProfilePicture?id=${messageGroupDetailsArray.id}`
         );
