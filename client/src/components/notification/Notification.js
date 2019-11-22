@@ -6,6 +6,7 @@ import { UserContext } from "../context/UserContext";
 import { withRouter } from "react-router";
 
 const Notification = props => {
+  //Test
   const [user] = useContext(UserContext);
   const [showProfile, setShowProfile] = useState(false);
   const token = Cookies.get("token");
