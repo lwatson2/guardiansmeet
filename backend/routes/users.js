@@ -194,7 +194,6 @@ router.get("/fetchUserProfile", verifyToken, async (req, res) => {
 });
 router.get("/fetchMatchedUserDetails", verifyToken, async (req, res) => {
   let id = req.query.id;
-  console.log(id);
   const user = await User.findOne({ _id: ObjectId(id) });
   res.json({
     user: {
@@ -273,7 +272,6 @@ router.get("/fetchusers", async (req, res) => {
 
 router.post("/createMessageGroup", verifyToken, async (req, res) => {
   const { user, requestedUser } = req.body;
-  console.log(user, requestedUser);
   const userProfile = await User.findOne({ username: user.username });
   if (userProfile.messages) {
     const messageGroup = userProfile.messages.find(message => {
@@ -312,7 +310,6 @@ router.post("/createMessageGroup", verifyToken, async (req, res) => {
       });
     }
   } else {
-    console.log(user.id, requestedUser.id);
     requestUserProfile.messages = {
       username: user.username,
       profilePicture: user.profilePicture,
@@ -331,7 +328,6 @@ router.post("/acceptMatchRequest", verifyToken, async (req, res) => {
     if (match.username === requestedUser.username) {
       match.accepted === true;
     }
-    console.log(match);
   });
   const requestedUserProfile = await User.findOne({
     username: requestedUser.username
@@ -409,7 +405,6 @@ router.post("/updateReadMessages", async (req, res) => {
 
 router.get("/getUserProfilePicture", async (req, res) => {
   const { id } = req.query;
-  console.log(id);
   const user = await User.findOne({ _id: ObjectId(id) });
   res.json({ profilePic: user.profilePicture, id });
 });
