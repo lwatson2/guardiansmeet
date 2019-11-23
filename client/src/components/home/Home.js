@@ -99,27 +99,28 @@ const Home = props => {
   if (loading) {
     return <Loading />;
   }
-
-  return (
-    <UserListContainer>
-      {userList.map(userItem => (
-        <ProfileCardContainer key={userItem._id}>
-          <ProfileCard
-            user={userItem}
-            handleChat={handleChat}
-            showChatBtn={true}
-            loggedInUser={user}
-          />
-        </ProfileCardContainer>
-      ))}
-      <LoadingContainer
-        opactiy={userList.length >= userCount && onScreen ? "0" : "1"}
-        ref={ref}
-      >
-        Loading
-      </LoadingContainer>
-    </UserListContainer>
-  );
+  if (!loading) {
+    return (
+      <UserListContainer>
+        {userList.map(userItem => (
+          <ProfileCardContainer key={userItem._id}>
+            <ProfileCard
+              user={userItem}
+              handleChat={handleChat}
+              showChatBtn={true}
+              loggedInUser={user}
+            />
+          </ProfileCardContainer>
+        ))}
+        <LoadingContainer
+          opactiy={userList.length >= userCount && onScreen ? "0" : "1"}
+          ref={ref}
+        >
+          Loading
+        </LoadingContainer>
+      </UserListContainer>
+    );
+  }
 };
 
 export default Home;
