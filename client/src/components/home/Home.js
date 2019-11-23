@@ -87,6 +87,7 @@ const Home = props => {
     const response = await axios.get("/users/userList");
     let userCountNum = response.data.count;
     setuserCount(userCountNum);
+    setloading(false);
   };
 
   //Runs whenever the user clicks chat button

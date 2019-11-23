@@ -72,7 +72,7 @@ const NotificationContainer = props => {
   }, [user]);
 
   useEffect(() => {
-    if (user && currentUserUsername === user.username) {
+    if (user && user.username && currentUserUsername === user.username) {
       axios.post(
         "/users/setViewedMatched",
         { user, id: requestedUser.id },
