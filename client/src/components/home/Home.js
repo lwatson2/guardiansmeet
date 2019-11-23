@@ -10,6 +10,7 @@ import {
   LoadingContainer
 } from "./Home_Styles";
 import ProfileCard from "../profileCard/ProfileCard";
+import { Loading } from "../loadingComponent/Loading";
 
 const Home = props => {
   const [userList, setUserList] = useState();
@@ -19,6 +20,7 @@ const Home = props => {
   const onScreen = useOnScreen(ref);
   const [user] = useContext(UserContext);
   const token = Cookies.get("token");
+  const [loading, setloading] = useState(initialState);
 
   let config = {
     headers: { Authorization: "Bearer " + token }
@@ -69,6 +71,7 @@ const Home = props => {
 
   // Fetches users on page load
   const fetchUsers = async () => {
+    setloading(true);
     let res;
     if (user) {
       res = await axios.get(`/users/fetchusers?offset=0&id=${user.id}`);
@@ -77,10 +80,10 @@ const Home = props => {
     }
     let users = res.data.users;
     console.log(users);
-    setUserList(users);
-    const response = await axios.get("/users/userList");
-    let userCountNum = response.data.count;
-    setuserCount(userCountNum);
+    // setUserList(users);
+    // const response = await axios.get("/users/userList");
+    // let userCountNum = response.data.count;
+    // setuserCount(userCountNum);
   };
 
   //Runs whenever the user clicks chat button
@@ -89,6 +92,10 @@ const Home = props => {
     axios.post("/users/updateSentMatches", { user, clickedUser }, config);
     axios.post("/users/handleMatchedUser", { user, clickedUser }, config);
   };
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <UserListContainer>
