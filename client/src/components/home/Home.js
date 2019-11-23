@@ -69,7 +69,7 @@ const Home = props => {
   // Fetches users on page load
   const fetchUsers = async () => {
     let res;
-    if (user) {
+    if (user && user.id) {
       res = await axios.get(`/users/fetchusers?offset=0&id=${user.id}`);
     } else {
       res = await axios.get(`/users/fetchusers?offset=0`);

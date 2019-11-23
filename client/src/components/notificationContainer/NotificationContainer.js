@@ -40,7 +40,7 @@ const NotificationContainer = props => {
     );
   };
   useEffect(() => {
-    if (user) {
+    if (user && user.matched) {
       user.matched.forEach(match => {
         if (match.viewed === false) {
           showToast(match.username, match.id);
@@ -49,7 +49,7 @@ const NotificationContainer = props => {
       });
     }
     let groupIdsSet = new Set();
-    if (user) {
+    if (user && user.messages) {
       user.messages.forEach(message => {
         message.messagesList.map(messageItem => {
           if (messageItem.viewed === false) {
@@ -72,7 +72,7 @@ const NotificationContainer = props => {
   }, [user]);
 
   useEffect(() => {
-    if (user && currentUserUsername === user.username) {
+    if (user && user.username && currentUserUsername === user.username) {
       axios.post(
         "/users/setViewedMatched",
         { user, id: requestedUser.id },
