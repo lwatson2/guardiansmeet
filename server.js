@@ -15,6 +15,9 @@ app.use(bodyParser.json());
 app.use(formData.parse());
 app.use(express.static(path.join(__dirname, "client", "build")));
 
+//Routing Config
+app.use("/users", user);
+
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
@@ -27,9 +30,6 @@ mongoose
   .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
   .then(() => console.log("mongodb connected"))
   .catch(err => console.log(err));
-
-//Routing Config
-app.use("/users", user);
 
 //Cloudinary Config
 
