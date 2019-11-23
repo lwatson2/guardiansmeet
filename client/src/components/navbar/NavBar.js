@@ -47,7 +47,7 @@ const NavBar = props => {
     }
   }, [newMessage]);
   useEffect(() => {
-    if (token && !user.username) {
+    if (token && !user) {
       const fetchData = async () => {
         let userProfile = await fetchUserData();
         setUser(userProfile);
