@@ -19,7 +19,7 @@ const MessagesHomePage = () => {
 
   useEffect(() => {
     const fetchUserMessages = async () => {
-      if (user) {
+      if (user && user.id) {
         setLoading(true);
         const res = await axios.get(
           `/users/getUserMessages?id=${user.id}`,
