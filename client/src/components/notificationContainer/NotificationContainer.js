@@ -21,9 +21,6 @@ const NotificationContainer = props => {
     headers: { Authorization: "Bearer " + token }
   };
 
-  useEffect(() => {
-    socket.on("connect", () => console.log("connected"));
-  }, []);
   const showToast = (username, id) => {
     toast(
       <NotificationMessage
