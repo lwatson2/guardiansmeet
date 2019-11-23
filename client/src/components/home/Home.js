@@ -11,6 +11,7 @@ import {
 } from "./Home_Styles";
 import ProfileCard from "../profileCard/ProfileCard";
 import { Loading } from "../loadingComponent/Loading";
+import { set } from "mongoose";
 
 const Home = props => {
   const [userList, setUserList] = useState([]);
@@ -67,6 +68,7 @@ const Home = props => {
         newUserList = userList.concat(res.data.users);
         setOffset(offsetUserQuery);
         setUserList(newUserList);
+        setloading(false);
       };
       fetchUserList();
     }
@@ -76,7 +78,7 @@ const Home = props => {
   const fetchUsers = async () => {
     setloading(true);
     let res;
-    if (user) {
+    if (user && user.id) {
       res = await axios.get(`/users/fetchusers?offset=0&id=${user.id}`);
     } else {
       res = await axios.get(`/users/fetchusers?offset=0`);
