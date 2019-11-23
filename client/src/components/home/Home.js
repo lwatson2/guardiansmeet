@@ -29,6 +29,7 @@ const Home = props => {
 
   useEffect(() => {
     fetchUsers();
+    console.log(user);
   }, []);
 
   //Checks for unseen notifications on user login

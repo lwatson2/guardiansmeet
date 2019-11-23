@@ -47,9 +47,7 @@ export const UserProfilePage = props => {
       setCurrentProfilePicture();
     };
   }, [user]);
-  useEffect(() => {
-    console.log(user);
-  }, []);
+
   const handleProfilePicture = event => {
     handleChange(event);
     setCurrentProfilePicture(URL.createObjectURL(event.target.files[0]));

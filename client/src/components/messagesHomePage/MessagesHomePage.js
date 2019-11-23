@@ -40,6 +40,9 @@ const MessagesHomePage = () => {
     };
     fetchUserMessages();
   }, [user]);
+  useEffect(() => {
+    console.log(user);
+  }, []);
   // useEffect(() => {
   //   let messageGroupList = userMessages;
   //   const fetchProfilePicture = async () => {
