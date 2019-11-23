@@ -40,7 +40,7 @@ const NotificationContainer = props => {
     );
   };
   useEffect(() => {
-    if (user) {
+    if (user && user.matched) {
       user.matched.forEach(match => {
         if (match.viewed === false) {
           showToast(match.username, match.id);

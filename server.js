@@ -10,6 +10,10 @@ const path = require("path");
 
 const PORT = process.env.PORT || 5000;
 const app = express();
+mongoose
+  .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
+  .then(() => console.log("mongodb connected"))
+  .catch(err => console.log(err));
 
 app.use(bodyParser.json());
 app.use(formData.parse());
@@ -22,11 +26,6 @@ const server = app.listen(
   process.env.PORT || 5000,
   console.log(`server started on ${PORT}`)
 );
-
-mongoose
-  .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
-  .then(() => console.log("mongodb connected"))
-  .catch(err => console.log(err));
 
 //Routing Config
 app.use("/users", user);
