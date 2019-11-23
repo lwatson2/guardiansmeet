@@ -6,12 +6,18 @@ const user = require("./routes/users");
 const cloudinary = require("cloudinary").v2;
 const formData = require("express-form-data");
 const socket = require("socket.io");
+const path = require("path");
 
 const PORT = process.env.PORT || 5000;
 const app = express();
 
 app.use(bodyParser.json());
 app.use(formData.parse());
+app.use(express.static(path.join(__dirname, "client", "build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 const server = app.listen(5000, console.log(`server started on ${PORT}`));
 
 mongoose
