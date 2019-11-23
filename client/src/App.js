@@ -46,7 +46,9 @@ const ProtectedRoute = ({ component: Component, socket, ...rest }) => {
 };
 
 const App = () => {
-  const socket = io.connect("http://localhost:5000", { secure: true });
+  const socket = io.connect("https://guardiansmeetsite.herokuapp.com/", {
+    secure: true
+  });
   return (
     <BrowserRouter>
       <UserProvider>

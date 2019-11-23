@@ -23,7 +23,9 @@ const Home = props => {
   let config = {
     headers: { Authorization: "Bearer " + token }
   };
-  const socket = io.connect("http://localhost:5000", { secure: true });
+  const socket = io.connect("https://guardiansmeetsite.herokuapp.com/", {
+    secure: true
+  });
 
   useEffect(() => {
     fetchUsers();
