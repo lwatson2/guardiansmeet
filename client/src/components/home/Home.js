@@ -31,6 +31,7 @@ const Home = props => {
 
   useEffect(() => {
     fetchUsers();
+    setloading(true);
     console.log(user);
   }, []);
 
@@ -39,6 +40,8 @@ const Home = props => {
     setOffset(0);
     setUserList([]);
     setuserCount(0);
+    setloading(true);
+
     fetchUsers();
   }, [user]);
 
