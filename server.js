@@ -17,6 +17,7 @@ mongoose
 
 app.use(bodyParser.json());
 app.use(formData.parse());
+app.use("/users", user);
 app.use(express.static(path.join(__dirname, "client", "build")));
 
 app.get("*", (req, res) => {
@@ -28,7 +29,6 @@ const server = app.listen(
 );
 
 //Routing Config
-app.use("/users", user);
 
 //Cloudinary Config
 
