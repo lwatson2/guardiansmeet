@@ -20,7 +20,7 @@ const Home = props => {
   const onScreen = useOnScreen(ref);
   const [user] = useContext(UserContext);
   const token = Cookies.get("token");
-  const [loading, setloading] = useState(initialState);
+  const [loading, setloading] = useState(false);
 
   let config = {
     headers: { Authorization: "Bearer " + token }
