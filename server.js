@@ -18,7 +18,10 @@ app.use(express.static(path.join(__dirname, "client", "build")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
 });
-const server = app.listen(5000, console.log(`server started on ${PORT}`));
+const server = app.listen(
+  process.env.PORT || 5000,
+  console.log(`server started on ${PORT}`)
+);
 
 mongoose
   .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
