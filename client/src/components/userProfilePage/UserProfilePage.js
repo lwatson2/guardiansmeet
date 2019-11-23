@@ -36,7 +36,7 @@ export const UserProfilePage = props => {
     validate
   );
   useEffect(() => {
-    if (user.id) {
+    if (user) {
       setCurrentProfilePicture(user.profilePicture);
       values.name = user.name;
       values.username = user.username;
