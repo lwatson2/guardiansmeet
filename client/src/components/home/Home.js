@@ -13,7 +13,7 @@ import ProfileCard from "../profileCard/ProfileCard";
 import { Loading } from "../loadingComponent/Loading";
 
 const Home = props => {
-  const [userList, setUserList] = useState();
+  const [userList, setUserList] = useState([]);
   const [userCount, setuserCount] = useState(0);
   const [offset, setOffset] = useState(0);
   const ref = useRef();
@@ -83,10 +83,10 @@ const Home = props => {
     }
     let users = res.data.users;
     console.log(users);
-    // setUserList(users);
-    // const response = await axios.get("/users/userList");
-    // let userCountNum = response.data.count;
-    // setuserCount(userCountNum);
+    setUserList(users);
+    const response = await axios.get("/users/userList");
+    let userCountNum = response.data.count;
+    setuserCount(userCountNum);
   };
 
   //Runs whenever the user clicks chat button
