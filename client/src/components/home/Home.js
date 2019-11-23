@@ -12,7 +12,7 @@ import {
 import ProfileCard from "../profileCard/ProfileCard";
 
 const Home = props => {
-  const [userList, setUserList] = useState([]);
+  const [userList, setUserList] = useState();
   const [userCount, setuserCount] = useState(0);
   const [offset, setOffset] = useState(0);
   const ref = useRef();
