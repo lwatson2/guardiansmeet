@@ -16,7 +16,6 @@ const Login = props => {
     if (res.data.err) {
       return setErrMsg(res.data.err.message);
     }
-    console.log(res.data);
     Cookies.set("token", res.data.token);
     setUser(res.data.user);
     setValues({});

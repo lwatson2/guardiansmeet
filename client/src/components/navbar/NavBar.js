@@ -47,11 +47,11 @@ const NavBar = props => {
     }
   }, [newMessage]);
   useEffect(() => {
-    if (token && !user) {
-      const fetchData = async () => {
-        let userProfile = await fetchUserData();
-        setUser(userProfile);
-      };
+    const fetchData = async () => {
+      let userProfile = await fetchUserData();
+      setUser(userProfile);
+    };
+    if (token && !user.id) {
       fetchData();
     }
   }, []);

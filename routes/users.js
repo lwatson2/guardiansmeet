@@ -354,7 +354,7 @@ router.get("/getUserMessages", async (req, res) => {
     res.json({ messages: [] });
   }
 });
-router.post("/updateChat/:id", (req, res) => {
+router.post("/updateChat/:id", verifyToken, (req, res) => {
   const { id } = req.params;
   const { messageDetails, sender, secondUserId, timestamp, groupId } = req.body;
 
@@ -366,6 +366,7 @@ router.post("/updateChat/:id", (req, res) => {
       }
     },
     (err, doc) => {
+      console.log(doc);
       if (err) {
         console.log(err);
       }
@@ -391,6 +392,7 @@ router.post("/updateReadMessages", async (req, res) => {
   const user = await User.findOne({
     _id: ObjectId(userId)
   });
+  console.log(userId);
   user.messages.forEach(messageArray => {
     if (messageArray._id == groupId) {
       messageArray.messagesList.map(messagesItem => {
