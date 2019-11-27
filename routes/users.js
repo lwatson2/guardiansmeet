@@ -359,7 +359,7 @@ router.post("/updateChat/:id", (req, res) => {
   const { messageDetails, sender, secondUserId, timestamp, groupId } = req.body;
 
   User.findOneAndUpdate(
-    { _id: ObjectId(sender.id), "messages._id": groupId },
+    { _id: ObjectId(id), "messages._id": groupId },
     {
       $push: {
         "messages.$.messagesList": { messageDetails, sender, timestamp }
@@ -372,7 +372,7 @@ router.post("/updateChat/:id", (req, res) => {
     }
   );
   User.findOneAndUpdate(
-    { _id: ObjectId(secondUserId), "messages.id": sender.id },
+    { _id: ObjectId(secondUserId), "messages.id": id },
     {
       $push: {
         "messages.$.messagesList": { messageDetails, sender, timestamp }
