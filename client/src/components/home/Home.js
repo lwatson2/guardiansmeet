@@ -33,7 +33,6 @@ const Home = props => {
   useEffect(() => {
     fetchUsers();
     setloading(true);
-    console.log(user);
   }, []);
 
   //Checks for unseen notifications on user login
@@ -84,7 +83,6 @@ const Home = props => {
       res = await axios.get(`/users/fetchusers?offset=0`);
     }
     let users = res.data.users;
-    console.log(users);
     setUserList(users);
     const response = await axios.get("/users/userList");
     let userCountNum = response.data.count;

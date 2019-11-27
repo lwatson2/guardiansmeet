@@ -12,7 +12,7 @@ const NotificationContainer = props => {
   const [userNotificationId, setUserNotificationId] = useState();
   const [currentUserUsername, setCurrentUserUsername] = useState();
   const [user] = useContext(UserContext);
-  const [setNewMessage] = useContext(NewMessageContext);
+  const [newMessage, setNewMessage] = useContext(NewMessageContext);
   const [showUser, setShowUser] = useState(false);
   const { socket } = props;
   const token = Cookies.get("token");
