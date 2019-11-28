@@ -26,6 +26,7 @@ const ProfileCard = ({ user, handleChat, showChatBtn, loggedInUser }) => {
             src={
               user.profilePicture ? user.profilePicture : ProfilePicPlaceHolder
             }
+            alt={`${user.name}'s profile picture`}
           ></UserImage>
         </UserImageContainer>
         <UserDetails>
