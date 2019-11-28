@@ -20,4 +20,6 @@ export const ProfileCardContainer = styled.div`
 export const LoadingContainer = styled.div`
   opacity: 0;
   align-self: end;
+  padding-bottom: 100px;
+  width: 100%;
 `;

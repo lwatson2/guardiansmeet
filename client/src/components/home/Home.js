@@ -10,15 +10,16 @@ import {
   LoadingContainer
 } from "./Home_Styles";
 import ProfileCard from "../profileCard/ProfileCard";
+import { useInView } from "react-intersection-observer";
 import { Loading } from "../loadingComponent/Loading";
-import { set } from "mongoose";
 
 const Home = props => {
   const [userList, setUserList] = useState([]);
   const [userCount, setuserCount] = useState(0);
   const [offset, setOffset] = useState(0);
-  const ref = useRef();
-  const onScreen = useOnScreen(ref);
+  const [ref, inView] = useInView({
+    threshold: 0
+  });
   const [user] = useContext(UserContext);
   const token = Cookies.get("token");
   const [loading, setloading] = useState(false);
@@ -45,12 +46,13 @@ const Home = props => {
 
   //Use effect for the infinite loading component
   useEffect(() => {
+    console.log("object");
     //If userlist array length is greater than the total number of users or the offset is greater than total number of users return
     if (userList.length > userCount || offset >= userCount) {
       return;
     }
     //Checks to make sure user is at bottom of page and that the userList array is contains items
-    if (onScreen && userList.length > 0 && userList.length <= userCount) {
+    if (inView && userList.length > 0 && userList.length <= userCount) {
       const offsetUserQuery = offset + 6;
       let newUserList = [];
       let res;
@@ -69,7 +71,7 @@ const Home = props => {
       };
       fetchUserList();
     }
-  }, [onScreen]);
+  }, [inView]);
 
   // Fetches users on page load
   const fetchUsers = async () => {
@@ -112,7 +114,7 @@ const Home = props => {
           </ProfileCardContainer>
         ))}
         <LoadingContainer
-          opactiy={userList.length >= userCount && onScreen ? "0" : "1"}
+          opactiy={userList.length >= userCount && inView ? "0" : "1"}
           ref={ref}
         >
           Loading

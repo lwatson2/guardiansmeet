@@ -9,8 +9,6 @@ const CreateProfile = props => {
   const [profilePicture, setProfilePicture] = useState(null);
 
   const handleProfilePicture = event => {
-    // let formData = new FormData();
-    // formData.append("file", event.target.files[0]);
     handleChange(event);
     setProfilePicture(URL.createObjectURL(event.target.files[0]));
   };

@@ -18,11 +18,11 @@ mongoose
 app.use(bodyParser.json());
 app.use(formData.parse());
 app.use("/users", user);
-app.use(express.static(path.join(__dirname, "client", "build")));
+// app.use(express.static(path.join(__dirname, "client", "build")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+// });
 const server = app.listen(
   process.env.PORT || 5000,
   console.log(`server started on ${PORT}`)

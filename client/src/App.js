@@ -45,8 +45,8 @@ const ProtectedRoute = ({ component: Component, socket, ...rest }) => {
   );
 };
 
+const socket = io.connect();
 const App = () => {
-  const socket = io.connect();
   return (
     <BrowserRouter>
       <UserProvider>

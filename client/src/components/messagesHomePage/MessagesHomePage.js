@@ -19,6 +19,7 @@ const MessagesHomePage = () => {
 
   useEffect(() => {
     const fetchUserMessages = async () => {
+      //Gets users most recent messages and most recent profile picture
       if (user && user.id) {
         setLoading(true);
         const res = await axios.get(
@@ -40,23 +41,6 @@ const MessagesHomePage = () => {
     };
     fetchUserMessages();
   }, [user]);
-
-  // useEffect(() => {
-  //   let messageGroupList = userMessages;
-  //   const fetchProfilePicture = async () => {
-  //     const promises = await messageGroupList.map(async message => {
-  //       let res = await axios.get(
-  //         `users/getUserProfilePicture?id=${message.id}`
-  //       );
-
-  //       message.profilePicture = res.data.profilePic;
-  //     });
-  //     setUserMessages(messageGroupList);
-  //   };
-  //   if (messageGroupList && messageGroupList.length > 0) {
-  //     fetchProfilePicture();
-  //   }
-  // }, [userMessages]);
   return (
     <MessageHomePage_View
       newMessage={newMessage}
