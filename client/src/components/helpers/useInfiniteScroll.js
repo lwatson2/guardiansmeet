@@ -10,7 +10,6 @@ const useOnScreen = (ref, options) => {
     }, options);
 
     if (ref.current) {
-      console.log("object");
       observer.observe(ref.current);
     }
     return () => {

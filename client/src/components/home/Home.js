@@ -46,7 +46,6 @@ const Home = props => {
 
   //Use effect for the infinite loading component
   useEffect(() => {
-    console.log("object");
     //If userlist array length is greater than the total number of users or the offset is greater than total number of users return
     if (userList.length > userCount || offset >= userCount) {
       return;
