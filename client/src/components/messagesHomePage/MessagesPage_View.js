@@ -79,6 +79,7 @@ const MessagesPage_View = ({
                       ? currentUserProfilePicture.profilePic
                       : ProfilePicPlaceHolder
                   }
+                  alt="profile picture"
                 />
               )}
               <MessageDetailsContinaer>

@@ -61,17 +61,21 @@ const MessagesPage = props => {
         userId: user.id,
         connectedUserId: messageGroupDetails.id
       });
-      if (messageGroupDetails._id && messageGroupDetails.messagesList > 0)
+
+      if (
+        messageGroupDetails._id &&
+        messageGroupDetails.messagesList.length > 0
+      ) {
         axios.post("/users/updateReadMessages", {
           groupId: messageGroupDetails._id,
           userId: user.id
         });
+      }
     }
     if (messageGroupDetails && messageGroupDetails.messagesList) {
       setMessagesList(messageGroupDetails.messagesList);
       setLoading(false);
     }
-    return () => {};
   }, [messageGroupDetails]);
   const handleSendMessage = () => {
     let timestamp = new Date().toLocaleString([], {

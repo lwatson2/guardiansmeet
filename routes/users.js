@@ -392,7 +392,6 @@ router.post("/updateReadMessages", async (req, res) => {
   const user = await User.findOne({
     _id: ObjectId(userId)
   });
-
   user.messages.forEach(messageArray => {
     if (messageArray._id == groupId) {
       messageArray.messagesList.map(messagesItem => {
